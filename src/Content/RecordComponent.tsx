@@ -5,6 +5,7 @@ import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DownloadIcon from "@mui/icons-material/Download";
+import Swal from "sweetalert2";
 import React, { useEffect, useState } from "react";
 
 const RecordComponent: React.FC = () => {
@@ -65,26 +66,60 @@ const RecordComponent: React.FC = () => {
           console.error(`The following getUserMedia error occurred: ${err}`);
         });
     } else {
-      console.error("getUserMedia not supported on your browser!"); // A gerer pour avoir une notificatio ou une alerte
+      console.error("getUserMedia not supported on your browser!");
+      Swal.fire({
+        title: "Error!",
+        text: "getUserMedia not supported on your browser!",
+        icon: "error",
+        confirmButtonText: "Okay",
+      });
     }
   }, []);
 
+  /** Suppression d'un audio */
   const handleDeleteClip = (clipIndex: number) => {
-    // Supprimer le clip de la liste
-    setClips((prevClips) =>
-      prevClips.filter((_, index) => index !== clipIndex)
-    );
+    Swal.fire({
+      title: "Êtes-vous sûr ?",
+      text: "Cette action est irréversible !",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Oui, supprimer !",
+      cancelButtonText: "Annuler",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Supprimer le clip de la liste
+        setClips((prevClips) =>
+          prevClips.filter((_, index) => index !== clipIndex)
+        );
+        Swal.fire("Supprimé !", "Le clip a bien été supprimé.", "success");
+      }
+    });
+  };
+
+  /** Téléchargement d'un audio */
+  const handleDownload = (audioURL: string) => {
+    Swal.fire({
+      title: "Téléchargement en cours",
+      text: "Votre téléchargement commence dans un instant...",
+      icon: "info",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    // Démarre le téléchargement après l'affichage de l'alerte pour la forme mais useless au fond
+    const a = document.createElement("a");
+    a.href = audioURL;
+    a.download = "EnregistrementCV"; // Nom du fichier à télécharger a voir si on modifie ou pas
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   return (
-    <article style={{ color: "#FFFFFF" }}>
+    <article style={{ color: "#FFFFFF", width: "100vw" }}>
       <Typography variant="h5">Enregistrement</Typography>
-      <Button
-        id="record"
-        variant="contained"
-        disabled={recordIsDisabled}
-        style={{ marginRight: "10px" }}
-      >
+      <Button id="record" variant="contained" disabled={recordIsDisabled}>
         Rec
       </Button>
       <Button id="stop" variant="contained" disabled={stopIsDisabled}>
@@ -93,13 +128,21 @@ const RecordComponent: React.FC = () => {
 
       <div
         id="sound-clips"
-        style={{ margin: "50px", display: "flex", flex:"wrap", gap: "10px" }}
+        style={{
+          margin: "50px",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill,minmax(320px, 22vw))",
+          gap: "10px",
+        }}
       >
         {clips.map((clip, index) => (
           <Card
             key={index}
             variant="outlined"
-            style={{ marginTop: "10px", minWidth: "fit-content", width:"fit-content"}}
+            style={{
+              minWidth: "320px",
+              width: "22vw",
+            }}
           >
             <CardContent>
               <Typography variant="h6">{clip.clipName}</Typography>
@@ -122,9 +165,7 @@ const RecordComponent: React.FC = () => {
               <Button
                 color="secondary"
                 variant="contained"
-                onClick={() => {}}
-                href={clip.audioURL}
-                download="EnregistrementCV"
+                onClick={() => handleDownload(clip.audioURL)}
                 title="Télécharger votre fichier"
               >
                 <DownloadIcon />
