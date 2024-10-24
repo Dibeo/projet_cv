@@ -11,9 +11,7 @@ import React, { useEffect, useState } from "react";
 const RecordComponent: React.FC = () => {
   const [recordIsDisabled, setRecordIsDisabled] = useState(false);
   const [stopIsDisabled, setStopIsDisabled] = useState(true);
-  const [cvs, setCVs] = useState<{ audioURL: string; cvName: string }[]>(
-    []
-  );
+  const [cvs, setCVs] = useState<{ audioURL: string; cvName: string }[]>([]);
 
   useEffect(() => {
     const record = document.querySelector("#record") as HTMLButtonElement;
@@ -53,32 +51,34 @@ const RecordComponent: React.FC = () => {
           mediaRecorder.onstop = async () => {
             // Afficher la fenêtre SweetAlert pour demander le nom du cv
             const { value: cvName } = await Swal.fire({
-              title: 'Nommer le cv audio',
-              input: 'text',
-              inputLabel: 'Entrez un nom pour votre cv',
-              inputPlaceholder: 'Nom du cv',
+              title: "Nommer le cv audio",
+              input: "text",
+              inputLabel: "Entrez un nom pour votre cv",
+              inputPlaceholder: "Nom du cv",
               showCancelButton: true,
-              confirmButtonText: 'Enregistrer',
-              cancelButtonText: 'Annuler',
+              confirmButtonText: "Enregistrer",
+              cancelButtonText: "Annuler",
               inputValidator: (value) => {
                 if (!value) {
-                  return 'Vous devez entrer un nom !';
+                  return "Vous devez entrer un nom !";
                 }
                 return null;
               },
             });
 
-            const finalCVName = cvName || 'Unnamed cv'; //gere les possibles personnes qui ne nommerait pas leur fichier
-          
+            const finalCVName = cvName || "Unnamed cv"; //gere les possibles personnes qui ne nommerait pas leur fichier
+
             // Créer le blob audio à partir des morceaux enregistrés
             const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
             chunks = []; // Réinitialiser les morceaux pour l'enregistrement suivant
             const audioURL = window.URL.createObjectURL(blob);
-          
+
             // Ajouter le nouveau cv dans la liste des cvs
-            setCVs((prevCVs) => [...prevCVs, { audioURL, cvName: finalCVName }]);
+            setCVs((prevCVs) => [
+              ...prevCVs,
+              { audioURL, cvName: finalCVName },
+            ]);
           };
-          
         })
         .catch((err) => {
           console.error(`The following getUserMedia error occurred: ${err}`);
@@ -108,9 +108,7 @@ const RecordComponent: React.FC = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         // Supprimer le cv de la liste
-        setCVs((prevCVs) =>
-          prevCVs.filter((_, index) => index !== cvIndex)
-        );
+        setCVs((prevCVs) => prevCVs.filter((_, index) => index !== cvIndex));
         Swal.fire("Supprimé !", "Le cv a bien été supprimé.", "success");
       }
     });
