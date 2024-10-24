@@ -3,21 +3,25 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DownloadIcon from "@mui/icons-material/Download";
 import React, { useEffect, useState } from "react";
 
 const RecordComponent: React.FC = () => {
   const [recordIsDisabled, setRecordIsDisabled] = useState(false);
   const [stopIsDisabled, setStopIsDisabled] = useState(true);
-  const [clips, setClips] = useState<
-    { audioURL: string; clipName: string }[]
-  >([]);
+  const [clips, setClips] = useState<{ audioURL: string; clipName: string }[]>(
+    []
+  );
 
   useEffect(() => {
     const record = document.querySelector("#record") as HTMLButtonElement;
     const stop = document.querySelector("#stop") as HTMLButtonElement;
 
     if (!record || !stop) {
-      console.log("Les éléments #record ou #stop ne sont pas encore disponibles.");
+      console.log(
+        "Les éléments #record ou #stop ne sont pas encore disponibles."
+      );
       return;
     }
 
@@ -31,7 +35,6 @@ const RecordComponent: React.FC = () => {
 
           record.onclick = () => {
             mediaRecorder.start();
-            console.log("recorder started");
             setRecordIsDisabled(true);
             setStopIsDisabled(false);
           };
@@ -42,38 +45,35 @@ const RecordComponent: React.FC = () => {
 
           stop.onclick = () => {
             mediaRecorder.stop();
-            console.log("recorder stopped");
             setRecordIsDisabled(false);
             setStopIsDisabled(true);
           };
 
           mediaRecorder.onstop = () => {
-            console.log("recorder stopped");
-
-            const clipName = prompt("Enter a name for your sound clip") || "Unnamed clip";
+            const clipName =
+              prompt("Enter a name for your sound clip") || "Unnamed clip"; //Utiliser sweetalert2
 
             const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
             chunks = []; // Reset the chunks for the next recording
             const audioURL = window.URL.createObjectURL(blob);
 
             // Ajouter le nouveau clip dans la liste
-            setClips((prevClips) => [
-              ...prevClips,
-              { audioURL, clipName },
-            ]);
+            setClips((prevClips) => [...prevClips, { audioURL, clipName }]);
           };
         })
         .catch((err) => {
           console.error(`The following getUserMedia error occurred: ${err}`);
         });
     } else {
-      console.log("getUserMedia not supported on your browser!");
+      console.error("getUserMedia not supported on your browser!"); // A gerer pour avoir une notificatio ou une alerte
     }
   }, []);
 
   const handleDeleteClip = (clipIndex: number) => {
     // Supprimer le clip de la liste
-    setClips((prevClips) => prevClips.filter((_, index) => index !== clipIndex));
+    setClips((prevClips) =>
+      prevClips.filter((_, index) => index !== clipIndex)
+    );
   };
 
   return (
@@ -91,26 +91,52 @@ const RecordComponent: React.FC = () => {
         Stop
       </Button>
 
-      <div id="sound-clips" style={{ marginTop: "20px" }}>
+      <div
+        id="sound-clips"
+        style={{ margin: "50px", display: "flex", flex:"wrap", gap: "10px" }}
+      >
         {clips.map((clip, index) => (
-          <Card key={index} variant="outlined" style={{ marginTop: "10px" }}>
+          <Card
+            key={index}
+            variant="outlined"
+            style={{ marginTop: "10px", minWidth: "fit-content", width:"fit-content"}}
+          >
             <CardContent>
               <Typography variant="h6">{clip.clipName}</Typography>
               <audio controls src={clip.audioURL}></audio>
             </CardContent>
-            <CardActions>
-            <Button
+            <CardActions
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Button
+                color="primary"
                 variant="contained"
                 onClick={() => console.log("Selected")}
+                style={{ width: "45%" }}
               >
                 Selectionner
+              </Button>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={() => {}}
+                href={clip.audioURL}
+                download="EnregistrementCV"
+                title="Télécharger votre fichier"
+              >
+                <DownloadIcon />
               </Button>
               <Button
                 variant="contained"
                 color="error"
                 onClick={() => handleDeleteClip(index)}
+                style={{ width: "fit-content" }}
+                title="Supprimer votre fichier"
               >
-                Supprimer
+                <DeleteIcon />
               </Button>
             </CardActions>
           </Card>
