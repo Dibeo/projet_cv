@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 const RecordComponent: React.FC = () => {
   const [recordIsDisabled, setRecordIsDisabled] = useState(false);
   const [stopIsDisabled, setStopIsDisabled] = useState(true);
-  const [clips, setClips] = useState<{ audioURL: string; clipName: string }[]>(
+  const [cvs, setCVs] = useState<{ audioURL: string; cvName: string }[]>(
     []
   );
 
@@ -50,17 +50,35 @@ const RecordComponent: React.FC = () => {
             setStopIsDisabled(true);
           };
 
-          mediaRecorder.onstop = () => {
-            const clipName =
-              prompt("Enter a name for your sound clip") || "Unnamed clip"; //Utiliser sweetalert2
+          mediaRecorder.onstop = async () => {
+            // Afficher la fenêtre SweetAlert pour demander le nom du cv
+            const { value: cvName } = await Swal.fire({
+              title: 'Nommer le cv audio',
+              input: 'text',
+              inputLabel: 'Entrez un nom pour votre cv',
+              inputPlaceholder: 'Nom du cv',
+              showCancelButton: true,
+              confirmButtonText: 'Enregistrer',
+              cancelButtonText: 'Annuler',
+              inputValidator: (value) => {
+                if (!value) {
+                  return 'Vous devez entrer un nom !';
+                }
+                return null;
+              },
+            });
 
+            const finalCVName = cvName || 'Unnamed cv'; //gere les possibles personnes qui ne nommerait pas leur fichier
+          
+            // Créer le blob audio à partir des morceaux enregistrés
             const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
-            chunks = []; // Reset the chunks for the next recording
+            chunks = []; // Réinitialiser les morceaux pour l'enregistrement suivant
             const audioURL = window.URL.createObjectURL(blob);
-
-            // Ajouter le nouveau clip dans la liste
-            setClips((prevClips) => [...prevClips, { audioURL, clipName }]);
+          
+            // Ajouter le nouveau cv dans la liste des cvs
+            setCVs((prevCVs) => [...prevCVs, { audioURL, cvName: finalCVName }]);
           };
+          
         })
         .catch((err) => {
           console.error(`The following getUserMedia error occurred: ${err}`);
@@ -77,7 +95,7 @@ const RecordComponent: React.FC = () => {
   }, []);
 
   /** Suppression d'un audio */
-  const handleDeleteClip = (clipIndex: number) => {
+  const handleDeleteCV = (cvIndex: number) => {
     Swal.fire({
       title: "Êtes-vous sûr ?",
       text: "Cette action est irréversible !",
@@ -89,11 +107,11 @@ const RecordComponent: React.FC = () => {
       cancelButtonText: "Annuler",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Supprimer le clip de la liste
-        setClips((prevClips) =>
-          prevClips.filter((_, index) => index !== clipIndex)
+        // Supprimer le cv de la liste
+        setCVs((prevCVs) =>
+          prevCVs.filter((_, index) => index !== cvIndex)
         );
-        Swal.fire("Supprimé !", "Le clip a bien été supprimé.", "success");
+        Swal.fire("Supprimé !", "Le cv a bien été supprimé.", "success");
       }
     });
   };
@@ -127,7 +145,7 @@ const RecordComponent: React.FC = () => {
       </Button>
 
       <div
-        id="sound-clips"
+        id="sound-cvs"
         style={{
           margin: "50px",
           display: "grid",
@@ -135,7 +153,7 @@ const RecordComponent: React.FC = () => {
           gap: "10px",
         }}
       >
-        {clips.map((clip, index) => (
+        {cvs.map((cv, index) => (
           <Card
             key={index}
             variant="outlined"
@@ -145,8 +163,8 @@ const RecordComponent: React.FC = () => {
             }}
           >
             <CardContent>
-              <Typography variant="h6">{clip.clipName}</Typography>
-              <audio controls src={clip.audioURL}></audio>
+              <Typography variant="h6">{cv.cvName}</Typography>
+              <audio controls src={cv.audioURL}></audio>
             </CardContent>
             <CardActions
               sx={{
@@ -165,7 +183,7 @@ const RecordComponent: React.FC = () => {
               <Button
                 color="secondary"
                 variant="contained"
-                onClick={() => handleDownload(clip.audioURL)}
+                onClick={() => handleDownload(cv.audioURL)}
                 title="Télécharger votre fichier"
               >
                 <DownloadIcon />
@@ -173,7 +191,7 @@ const RecordComponent: React.FC = () => {
               <Button
                 variant="contained"
                 color="error"
-                onClick={() => handleDeleteClip(index)}
+                onClick={() => handleDeleteCV(index)}
                 style={{ width: "fit-content" }}
                 title="Supprimer votre fichier"
               >
