@@ -1,46 +1,40 @@
 import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Typography from "@mui/material/Typography";
 import React, { useEffect, useState } from "react";
 
 const RecordComponent: React.FC = () => {
-  const [recordIsDisabled, SetRecordIsDisabled] = useState(false);
-  const [stopIsDisabled, SetStopIsDisabled] = useState(true);
+  const [recordIsDisabled, setRecordIsDisabled] = useState(false);
+  const [stopIsDisabled, setStopIsDisabled] = useState(true);
+  const [clips, setClips] = useState<
+    { audioURL: string; clipName: string }[]
+  >([]);
+
   useEffect(() => {
     const record = document.querySelector("#record") as HTMLButtonElement;
     const stop = document.querySelector("#stop") as HTMLButtonElement;
-    const soundClips = document.querySelector("#sound-clips") as HTMLElement;
 
-    if (!record || !stop || !soundClips) {
-      console.log(
-        "Les éléments #record, #stop ou #sound-clips ne sont pas encore disponibles."
-      );
+    if (!record || !stop) {
+      console.log("Les éléments #record ou #stop ne sont pas encore disponibles.");
       return;
     }
 
-    if (
-      navigator.mediaDevices &&
-      navigator.mediaDevices.getUserMedia &&
-      record != null &&
-      stop != null &&
-      soundClips != null
-    ) {
-      //Garder la condition comme tel sinon Typescript boude
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       console.log("getUserMedia supported.");
       navigator.mediaDevices
-        // On veut que l'audio
-        .getUserMedia({
-          audio: true,
-        })
+        .getUserMedia({ audio: true })
         .then((stream) => {
           const mediaRecorder = new MediaRecorder(stream);
+          let chunks: BlobPart[] = [];
+
           record.onclick = () => {
             mediaRecorder.start();
-            console.log(mediaRecorder.state);
             console.log("recorder started");
-            SetRecordIsDisabled(true);
-            SetStopIsDisabled(false);
+            setRecordIsDisabled(true);
+            setStopIsDisabled(false);
           };
-
-          let chunks: any = [];
 
           mediaRecorder.ondataavailable = (e) => {
             chunks.push(e.data);
@@ -48,42 +42,25 @@ const RecordComponent: React.FC = () => {
 
           stop.onclick = () => {
             mediaRecorder.stop();
-            console.log(mediaRecorder.state);
             console.log("recorder stopped");
-            SetRecordIsDisabled(false);
-            SetStopIsDisabled(true);
+            setRecordIsDisabled(false);
+            setStopIsDisabled(true);
           };
 
-          mediaRecorder.onstop = (e) => {
+          mediaRecorder.onstop = () => {
             console.log("recorder stopped");
 
-            const clipName = prompt("Enter a name for your sound clip");
-
-            const clipContainer = document.createElement("article");
-            const clipLabel = document.createElement("p");
-            const audio = document.createElement("audio");
-            const deleteButton = document.createElement("button");
-
-            clipContainer.classList.add("clip");
-            audio.setAttribute("controls", "");
-            deleteButton.textContent = "Delete";
-            clipLabel.textContent = clipName;
-
-            clipContainer.appendChild(audio);
-            clipContainer.appendChild(clipLabel);
-            clipContainer.appendChild(deleteButton);
-            soundClips.appendChild(clipContainer);
+            const clipName = prompt("Enter a name for your sound clip") || "Unnamed clip";
 
             const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
-            chunks = [];
+            chunks = []; // Reset the chunks for the next recording
             const audioURL = window.URL.createObjectURL(blob);
-            audio.src = audioURL;
 
-            deleteButton.onclick = (e) => {
-              let evtTgt = e.target as Element;
-              (evtTgt!.parentNode!.parentNode as HTMLElement).removeChild(evtTgt!.parentNode as HTMLElement);
-
-            };
+            // Ajouter le nouveau clip dans la liste
+            setClips((prevClips) => [
+              ...prevClips,
+              { audioURL, clipName },
+            ]);
           };
         })
         .catch((err) => {
@@ -92,19 +69,53 @@ const RecordComponent: React.FC = () => {
     } else {
       console.log("getUserMedia not supported on your browser!");
     }
-  });
+  }, []);
+
+  const handleDeleteClip = (clipIndex: number) => {
+    // Supprimer le clip de la liste
+    setClips((prevClips) => prevClips.filter((_, index) => index !== clipIndex));
+  };
 
   return (
-    <article className="clip" style={{ color: "#FFFFFF" }}>
-      <p>Component</p>
-      <audio controls></audio>
-      <Button id="record" variant="contained" disabled={recordIsDisabled}>
+    <article style={{ color: "#FFFFFF" }}>
+      <Typography variant="h5">Enregistrement</Typography>
+      <Button
+        id="record"
+        variant="contained"
+        disabled={recordIsDisabled}
+        style={{ marginRight: "10px" }}
+      >
         Rec
       </Button>
       <Button id="stop" variant="contained" disabled={stopIsDisabled}>
         Stop
       </Button>
-      <div id="sound-clips">Clip</div>
+
+      <div id="sound-clips" style={{ marginTop: "20px" }}>
+        {clips.map((clip, index) => (
+          <Card key={index} variant="outlined" style={{ marginTop: "10px" }}>
+            <CardContent>
+              <Typography variant="h6">{clip.clipName}</Typography>
+              <audio controls src={clip.audioURL} />
+            </CardContent>
+            <CardActions>
+            <Button
+                variant="contained"
+                onClick={() => console.log("Selected")}
+              >
+                Selectionner
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => handleDeleteClip(index)}
+              >
+                Supprimer
+              </Button>
+            </CardActions>
+          </Card>
+        ))}
+      </div>
     </article>
   );
 };
