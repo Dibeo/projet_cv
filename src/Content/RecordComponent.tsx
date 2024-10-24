@@ -96,7 +96,7 @@ const RecordComponent: React.FC = () => {
           <Card key={index} variant="outlined" style={{ marginTop: "10px" }}>
             <CardContent>
               <Typography variant="h6">{clip.clipName}</Typography>
-              <audio controls src={clip.audioURL} />
+              <audio controls src={clip.audioURL}></audio>
             </CardContent>
             <CardActions>
             <Button
