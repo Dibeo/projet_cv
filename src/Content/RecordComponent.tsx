@@ -1,3 +1,8 @@
+/**
+ * Audio Vizualiser : https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API
+ * Record function : https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API/Using_the_MediaStream_Recording_API
+ */
+
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -6,12 +11,19 @@ import Typography from "@mui/material/Typography";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DownloadIcon from "@mui/icons-material/Download";
 import Swal from "sweetalert2";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+
+import AudioVisualizer from "./AudioVisualizer";
 
 const RecordComponent: React.FC = () => {
   const [recordIsDisabled, setRecordIsDisabled] = useState(false);
   const [stopIsDisabled, setStopIsDisabled] = useState(true);
   const [cvs, setCVs] = useState<{ audioURL: string; cvName: string }[]>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const audioVisualizer: AudioVisualizer = new AudioVisualizer;
+
+  // Références pour MediaRecorder et AudioContext
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 
   useEffect(() => {
     const record = document.querySelector("#record") as HTMLButtonElement;
@@ -29,27 +41,32 @@ const RecordComponent: React.FC = () => {
       navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
-          const mediaRecorder = new MediaRecorder(stream);
+          mediaRecorderRef.current = new MediaRecorder(stream);
           let chunks: BlobPart[] = [];
 
           record.onclick = () => {
-            mediaRecorder.start();
-            setRecordIsDisabled(true);
-            setStopIsDisabled(false);
+            if (mediaRecorderRef.current) {
+              mediaRecorderRef.current.start();
+              setRecordIsDisabled(true);
+              setStopIsDisabled(false);
+              audioVisualizer.startAudioVisualizer(stream, canvasRef);
+            }
           };
 
-          mediaRecorder.ondataavailable = (e) => {
+          mediaRecorderRef.current.ondataavailable = (e) => {
             chunks.push(e.data);
           };
 
           stop.onclick = () => {
-            mediaRecorder.stop();
-            setRecordIsDisabled(false);
-            setStopIsDisabled(true);
+            if (mediaRecorderRef.current) {
+              mediaRecorderRef.current.stop();
+              setRecordIsDisabled(false);
+              setStopIsDisabled(true);
+              audioVisualizer.stopAudioVisualizer(stream, canvasRef);
+            }
           };
 
-          mediaRecorder.onstop = async () => {
-            // Afficher la fenêtre SweetAlert pour demander le nom du cv
+          mediaRecorderRef.current.onstop = async () => {
             const { value: cvName } = await Swal.fire({
               title: "Nommer le cv audio",
               input: "text",
@@ -66,14 +83,12 @@ const RecordComponent: React.FC = () => {
               },
             });
 
-            const finalCVName = cvName || "Unnamed cv"; //gere les possibles personnes qui ne nommerait pas leur fichier
+            const finalCVName = cvName || "Unnamed cv";
 
-            // Créer le blob audio à partir des morceaux enregistrés
             const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
-            chunks = []; // Réinitialiser les morceaux pour l'enregistrement suivant
+            chunks = [];
             const audioURL = window.URL.createObjectURL(blob);
 
-            // Ajouter le nouveau cv dans la liste des cvs
             setCVs((prevCVs) => [
               ...prevCVs,
               { audioURL, cvName: finalCVName },
@@ -94,7 +109,6 @@ const RecordComponent: React.FC = () => {
     }
   }, []);
 
-  /** Suppression d'un audio */
   const handleDeleteCV = (cvIndex: number) => {
     Swal.fire({
       title: "Êtes-vous sûr ?",
@@ -107,14 +121,12 @@ const RecordComponent: React.FC = () => {
       cancelButtonText: "Annuler",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Supprimer le cv de la liste
         setCVs((prevCVs) => prevCVs.filter((_, index) => index !== cvIndex));
         Swal.fire("Supprimé !", "Le cv a bien été supprimé.", "success");
       }
     });
   };
 
-  /** Téléchargement d'un audio */
   const handleDownload = (audioURL: string) => {
     Swal.fire({
       title: "Téléchargement en cours",
@@ -123,24 +135,45 @@ const RecordComponent: React.FC = () => {
       showConfirmButton: false,
       timer: 2000,
     });
-    // Démarre le téléchargement après l'affichage de l'alerte pour la forme mais useless au fond
     const a = document.createElement("a");
     a.href = audioURL;
-    a.download = "EnregistrementCV"; // Nom du fichier à télécharger a voir si on modifie ou pas
+    a.download = "EnregistrementCV";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
   };
 
   return (
-    <article style={{ color: "#FFFFFF", width: "100vw" }}>
-      <Typography variant="h5">Enregistrement</Typography>
-      <Button id="record" variant="contained" disabled={recordIsDisabled}>
-        Rec
-      </Button>
-      <Button id="stop" variant="contained" disabled={stopIsDisabled}>
-        Stop
-      </Button>
+    <article style={{ color: "#FFFFFF" }}>
+      <section
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h5">Enregistrement</Typography>
+        <Button id="record" variant="contained" disabled={recordIsDisabled}>
+          Rec
+        </Button>
+        <Button
+          id="stop"
+          variant="contained"
+          disabled={stopIsDisabled}
+          color="error"
+        >
+          Stop
+        </Button>
+
+        <canvas
+          ref={canvasRef}
+          style={{
+            width: "80vw",
+            height: "200px",
+            backgroundColor: "transparent",
+          }}
+        ></canvas>
+      </section>
 
       <div
         id="sound-cvs"
