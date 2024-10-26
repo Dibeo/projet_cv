@@ -4,15 +4,11 @@
  */
 
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
-import DeleteIcon from "@mui/icons-material/Delete";
-import DownloadIcon from "@mui/icons-material/Download";
 import Swal from "sweetalert2";
 import React, { useEffect, useState, useRef } from "react";
 
+import AudioCard from "./AudioCard";
 import AudioVisualizer from "./AudioVisualizer";
 
 const RecordComponent: React.FC = () => {
@@ -20,7 +16,7 @@ const RecordComponent: React.FC = () => {
   const [stopIsDisabled, setStopIsDisabled] = useState(true);
   const [cvs, setCVs] = useState<{ audioURL: string; cvName: string }[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const audioVisualizer: AudioVisualizer = new AudioVisualizer;
+  const audioVisualizer: AudioVisualizer = new AudioVisualizer();
 
   // Références pour MediaRecorder et AudioContext
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -185,51 +181,10 @@ const RecordComponent: React.FC = () => {
         }}
       >
         {cvs.map((cv, index) => (
-          <Card
-            key={index}
-            variant="outlined"
-            style={{
-              minWidth: "320px",
-              width: "22vw",
-            }}
-          >
-            <CardContent>
-              <Typography variant="h6">{cv.cvName}</Typography>
-              <audio controls src={cv.audioURL}></audio>
-            </CardContent>
-            <CardActions
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => console.log("Selected")}
-                style={{ width: "45%" }}
-              >
-                Selectionner
-              </Button>
-              <Button
-                color="secondary"
-                variant="contained"
-                onClick={() => handleDownload(cv.audioURL)}
-                title="Télécharger votre fichier"
-              >
-                <DownloadIcon />
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => handleDeleteCV(index)}
-                style={{ width: "fit-content" }}
-                title="Supprimer votre fichier"
-              >
-                <DeleteIcon />
-              </Button>
-            </CardActions>
-          </Card>
+          <AudioCard cv={cv}
+          index={index}
+          handleDownload={handleDownload}
+          handleDeleteCV={handleDeleteCV}/>
         ))}
       </div>
     </article>
