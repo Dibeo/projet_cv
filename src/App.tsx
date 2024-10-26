@@ -2,11 +2,13 @@ import './App.css';
 import RecordComponent from './Content/RecordComponent';
 
 function App() {
+  //utiliser unstepper mui pour suivre les etapes
   return (
     <div className="App">
       <header className="App-header">
         Projet 1
       </header>
+      
       <RecordComponent />
     </div>
   );
