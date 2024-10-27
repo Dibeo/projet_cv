@@ -10,6 +10,7 @@ import React, { useEffect, useState, useRef } from "react";
 
 import AudioCard from "./AudioCard";
 import AudioVisualizer from "./AudioVisualizer";
+import driverObj from "./Driver";
 
 const RecordComponent: React.FC = () => {
   const [recordIsDisabled, setRecordIsDisabled] = useState(false);
@@ -18,10 +19,19 @@ const RecordComponent: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioVisualizer: AudioVisualizer = new AudioVisualizer();
 
-window.addEventListener("load", () => {setCVs((prevCVs) => [
-  ...prevCVs,
-  { audioURL:"./Audio/Bonjour__je_m_appelle_Jean_Dupont.mp3", cvName: "Exemple" },  //ressources doivent etre dans public
-]);}, false)
+  window.addEventListener(
+    "load",
+    () => {
+      setCVs((prevCVs) => [
+        ...prevCVs,
+        {
+          audioURL: "./Audio/Bonjour__je_m_appelle_Jean_Dupont.mp3",
+          cvName: "Exemple",
+        }, //ressources doivent etre dans public
+      ]);
+    },
+    false
+  );
 
   // Références pour MediaRecorder et AudioContext
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -95,6 +105,11 @@ window.addEventListener("load", () => {setCVs((prevCVs) => [
               { audioURL, cvName: finalCVName },
             ]);
           };
+
+          //Driver.js est trop bien et c'est du typescript de base
+          driverObj.drive();
+          console.log("ici");
+
         })
         .catch((err) => {
           console.error(`The following getUserMedia error occurred: ${err}`);
@@ -150,8 +165,6 @@ window.addEventListener("load", () => {setCVs((prevCVs) => [
     document.body.removeChild(a);
   };
 
-
-
   return (
     <article style={{ color: "#FFFFFF" }}>
       <section
@@ -162,17 +175,23 @@ window.addEventListener("load", () => {setCVs((prevCVs) => [
         }}
       >
         <Typography variant="h5">Enregistrement</Typography>
-        <Button id="record" variant="contained" disabled={recordIsDisabled}>
-          Rec
-        </Button>
-        <Button
-          id="stop"
-          variant="contained"
-          disabled={stopIsDisabled}
-          color="error"
-        >
-          Stop
-        </Button>
+        <span style={{display:"flex", gap:"25px"}}>
+          <Button 
+            id="record" 
+            variant="contained" 
+            disabled={recordIsDisabled}
+          >
+            Rec
+          </Button>
+          <Button
+            id="stop"
+            variant="contained"
+            disabled={stopIsDisabled}
+            color="error"
+          >
+            Stop
+          </Button>
+        </span>
 
         <canvas
           ref={canvasRef}
@@ -194,12 +213,13 @@ window.addEventListener("load", () => {setCVs((prevCVs) => [
         }}
       >
         {cvs.map((cv, index) => (
-          <AudioCard 
-          key={cv.audioURL} //PErmet de faire disparaitre un warning qui veut que les composant du liste en react ts ai une key definie
-          cv={cv}
-          index={index}
-          handleDownload={handleDownload}
-          handleDeleteCV={handleDeleteCV}/>
+          <AudioCard
+            key={cv.audioURL} //PErmet de faire disparaitre un warning qui veut que les composant du liste en react ts ai une key definie
+            cv={cv}
+            index={index}
+            handleDownload={handleDownload}
+            handleDeleteCV={handleDeleteCV}
+          />
         ))}
       </section>
     </article>
