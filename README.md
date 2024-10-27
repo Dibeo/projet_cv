@@ -2,9 +2,12 @@
 
 Clicker [ici](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) pour voir le sujet complet.
 
-# Getting Started with Create React App
+# Bibliothèque utilisées :
+- **[Material UI](https://mui.com/)** : le style
+- **[SweetAlert 2](https://sweetalert2.github.io/)** : les alertes
+- **[Driver.JS](https://driverjs.com/)** : les guided tour
 
-Blep
+# Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
