@@ -2,7 +2,7 @@
 
 Clicker [ici](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) pour voir le sujet complet.
 
-# Bibliothèque utilisées :
+# Bibliothèques utilisées :
 - **[Material UI](https://mui.com/)** : le style
 - **[SweetAlert 2](https://sweetalert2.github.io/)** : les alertes
 - **[Driver.JS](https://driverjs.com/)** : les guided tour
