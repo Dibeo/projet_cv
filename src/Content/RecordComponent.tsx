@@ -18,6 +18,11 @@ const RecordComponent: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioVisualizer: AudioVisualizer = new AudioVisualizer();
 
+window.addEventListener("load", () => {setCVs((prevCVs) => [
+  ...prevCVs,
+  { audioURL:"./Audio/Bonjour__je_m_appelle_Jean_Dupont.mp3", cvName: "Exemple" },  //ressources doivent etre dans public
+]);}, false)
+
   // Références pour MediaRecorder et AudioContext
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 
@@ -93,6 +98,12 @@ const RecordComponent: React.FC = () => {
         })
         .catch((err) => {
           console.error(`The following getUserMedia error occurred: ${err}`);
+          Swal.fire({
+            title: "Error!",
+            text: `The following getUserMedia error occurred: ${err}!`,
+            icon: "error",
+            confirmButtonText: "Okay",
+          });
         });
     } else {
       console.error("getUserMedia not supported on your browser!");
@@ -139,6 +150,8 @@ const RecordComponent: React.FC = () => {
     document.body.removeChild(a);
   };
 
+
+
   return (
     <article style={{ color: "#FFFFFF" }}>
       <section
@@ -171,7 +184,7 @@ const RecordComponent: React.FC = () => {
         ></canvas>
       </section>
 
-      <div
+      <section
         id="sound-cvs"
         style={{
           margin: "50px",
@@ -181,12 +194,14 @@ const RecordComponent: React.FC = () => {
         }}
       >
         {cvs.map((cv, index) => (
-          <AudioCard cv={cv}
+          <AudioCard 
+          key={cv.audioURL} //PErmet de faire disparaitre un warning qui veut que les composant du liste en react ts ai une key definie
+          cv={cv}
           index={index}
           handleDownload={handleDownload}
           handleDeleteCV={handleDeleteCV}/>
         ))}
-      </div>
+      </section>
     </article>
   );
 };
