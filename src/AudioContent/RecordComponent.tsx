@@ -108,7 +108,6 @@ const RecordComponent: React.FC = () => {
 
           //Driver.js est trop bien et c'est du typescript de base
           driverObj.drive();
-          console.log("ici");
 
         })
         .catch((err) => {
