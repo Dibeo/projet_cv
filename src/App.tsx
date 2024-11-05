@@ -1,5 +1,5 @@
 import './App.css';
-import RecordComponent from './AudioContent/RecordComponent';
+import AppStepper from './MainContent/Stepper';
 
 function App() {
   //utiliser unstepper mui pour suivre les etapes
@@ -9,7 +9,7 @@ function App() {
         Projet 1
       </header>
       
-      <RecordComponent />
+      <AppStepper />
     </div>
   );
 }
