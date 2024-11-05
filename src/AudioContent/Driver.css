@@ -1,0 +1,48 @@
+.driver-popover {
+    border: 3px solid green;
+  }
+  
+  .driver-popover-arrow {
+    margin: 2px;
+    border-width: 10px;
+  }
+  
+  .driver-popover-arrow-side-left.driver-popover-arrow {
+    border-left-color: green;
+  }
+  
+  .driver-popover-arrow-side-right.driver-popover-arrow {
+    border-right-color: green;
+  }
+  
+  .driver-popover-arrow-side-top.driver-popover-arrow {
+    border-top-color: green;
+  }
+  
+  .driver-popover-arrow-side-bottom.driver-popover-arrow {
+    border-bottom-color: green;
+  }
+  
+  .driver-popover-title {
+    font-family: "Cabin Sketch", cursive;
+    font-size: 1.2rem;
+  }
+  
+  .driver-popover-description {
+    font-family: "Klee One", cursive;
+    font-size: 1rem;
+  }
+  
+  .driver-popover-close-btn {
+    color: red;
+  }
+  
+  .driver-popover-footer {
+    border-top: 1px solid lightgray;
+    padding-top: 10px;
+  }
+  
+  .driver-popover-progress-text {
+    color: maroon;
+  }
+  

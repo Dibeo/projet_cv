@@ -1,5 +1,6 @@
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
+import "./Driver.css"
 
 const driverObj = driver({
   showProgress: true,
