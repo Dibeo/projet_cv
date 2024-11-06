@@ -1,0 +1,25 @@
+Commands to install (~5 Go so too big to add to git):
+    virtualenv -p python3.10 python_stt
+    source python_stt/bin/activate
+    python -m pip install -U pip
+    pip install --upgrade wheel setuptools
+    pip install coqui-stt-model-manager
+    pip install openai-whisper
+
+
+
+-- Option 1: https://github.com/openai/whisper
+
+    PROBLEMES: CONSOMME BEAUCOUP DE VRAM POUR UTILISER LE MODELE HAUTE PRECISION, API PYTHON SEULEMENT, ACCELERE PAR CUDA (DONC NVIDIA MIEUX)
+    AVANTAGES: FAIT PAR OPENAI, PRENDS EN CHARGE PLUSIEURS LANGUES, FACILE A INSTALLER, PRENDS EN CHARGE LA TRADUCTION, 
+               MODEL TURBO CORRECTE EN TERME DE VITESSE, FONCTIONNE CORRECTEMENT
+
+    whisper {audio_file. mp3/wav/flac} --model turbo
+
+
+-- Option 2: https://github.com/coqui-ai/STT
+
+    PROBLEMES: PLUS MIS A JOUR, J'AI TOUJOURS PAS TROUVE COMMENT LE FAIRE FONCTIONNER
+    AVANTAGES: PRISE EN CHARGE Javascript / NodeJS
+
+    stt-model-manager
