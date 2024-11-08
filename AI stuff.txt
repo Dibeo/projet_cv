@@ -5,10 +5,10 @@ fedora: sudo apt install -y python3-full python3-devel python3.10 python3.10-dev
 windows: https://www.python.org/downloads/release/python-3100/ & pip install virtualenv
 
 Commands to install (~5 Go so too big to add to git):
-    virtualenv -p python3.10 python_stt
-    source python_stt/bin/activate
-    python -m pip install -U pip
-    pip install --upgrade wheel setuptools
+    virtualenv -p python3.10 python_stt && \
+    source python_stt/bin/activate && \
+    python -m pip install -U pip && \
+    pip install --upgrade wheel setuptools && \
     pip install openai-whisper
 
 -- Option 1 (choisit): https://github.com/openai/whisper
