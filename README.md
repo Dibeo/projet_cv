@@ -15,19 +15,19 @@ Clicker [ici](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) pour voir 
     
 To run the app, you need to install python 3.10 + dev toolkit + virtualenv:
 
-- **ubuntu/debian** : ''' sudo apt install -y python3-full python3-dev python3.10 python3.10-dev python3-virtualenv '''
-- **fedora** : ''' sudo apt install -y python3-full python3-devel python3.10 python3.10-devel python3-virtualenv '''
-- **windows** : ''' https://www.python.org/downloads/release/python-3100/ & pip install virtualenv '''
+- **ubuntu/debian** : ``` sudo apt install -y python3-full python3-dev python3.10 python3.10-dev python3-virtualenv ```
+- **fedora** : ``` sudo apt install -y python3-full python3-devel python3.10 python3.10-devel python3-virtualenv ```
+- **windows** : ``` https://www.python.org/downloads/release/python-3100/ & pip install virtualenv ```
 
 ### Commands to install:
 
-'''
+```
 virtualenv -p python3.10 python_stt && \
 source python_stt/bin/activate && \
 python -m pip install -U pip && \
 pip install --upgrade wheel setuptools && \
 pip install openai-whisper
-'''
+```
 
 # Installing server with docker (not working yet):
 
