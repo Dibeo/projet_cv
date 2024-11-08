@@ -3,15 +3,32 @@
 Clicker [ici](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) pour voir le sujet complet.
 
 # Bibliothèques utilisées :
-- **[Material UI](https://mui.com/)** : le style
-- **[SweetAlert 2](https://sweetalert2.github.io/)** : les alertes
-- **[Driver.JS](https://driverjs.com/)** : les guided tour
+- **[Material UI](https://mui.com/)** : Style de la page
+- **[SweetAlert 2](https://sweetalert2.github.io/)** : Gestion des alertes
+- **[Driver.JS](https://driverjs.com/)** : Les guided tour
+- **[React](https://fr.react.dev/)** : framework React
 - **[Whisper](https://openai.com/index/whisper/)** : IA Speech-to-text
 
 # Installing server manually (to change):
-read "AI stuff.txt" for requirements and installation instructions
+
+### Requirements:
+    
+To run the app, you need to install python 3.10 + dev toolkit + virtualenv:
+
+- **ubuntu/debian** : sudo apt install -y python3-full python3-dev python3.10 python3.10-dev python3-virtualenv
+- **fedora** : sudo apt install -y python3-full python3-devel python3.10 python3.10-devel python3-virtualenv
+- **windows** : https://www.python.org/downloads/release/python-3100/ & pip install virtualenv
+
+### Commands to install:
+
+virtualenv -p python3.10 python_stt && \
+source python_stt/bin/activate && \
+python -m pip install -U pip && \
+pip install --upgrade wheel setuptools && \
+pip install openai-whisper
 
 # Installing server with docker (not working yet):
+
 read "docker stuff.txt" for instructions
 
 # Getting Started with Create React App
