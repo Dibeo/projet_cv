@@ -1,0 +1,5 @@
+Install with Docker:
+    sudo docker build -t openai-whisper . --network=host
+
+Running:
+    docker run --gpus all -it -v ${PWD}/models:/root/.cache/whisper -v ${PWD}/audio-files:/app openai-whisper whisper audio-file.mp3 --model turbo --output_dir /app --output_format txt

@@ -6,6 +6,13 @@ Clicker [ici](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) pour voir 
 - **[Material UI](https://mui.com/)** : le style
 - **[SweetAlert 2](https://sweetalert2.github.io/)** : les alertes
 - **[Driver.JS](https://driverjs.com/)** : les guided tour
+- **[Whisper](https://openai.com/index/whisper/)** : IA Speech-to-text
+
+# Installing server manually (to change):
+read "AI stuff.txt" for requirements and installation instructions
+
+# Installing server with docker (not working yet):
+read "docker stuff.txt" for instructions
 
 # Getting Started with Create React App
 
