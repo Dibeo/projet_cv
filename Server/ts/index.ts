@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-import fs from "fs";
 import { exec } from "child_process";
 import util from "util";
 import path from "path";
