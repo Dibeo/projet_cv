@@ -25,7 +25,7 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
     console.log("Uploaded file:", uploadedFilePath);
 
     try {
-      exec("virtualenv -p python3.10 python_stt");
+      //exec("virtualenv -p python3.10 python_stt");
       exec(`whisper ${uploadedFilePath} --model turbo --output_format txt`);
 
       // Exécuter la commande
