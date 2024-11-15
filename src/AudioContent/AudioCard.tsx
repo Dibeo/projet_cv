@@ -1,3 +1,4 @@
+import React from "react";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -24,6 +25,30 @@ const AudioCard: React.FC<AudioProps> = ({
   handleDownload,
   handleDeleteCV,
 }) => {
+  // Fonction pour envoyer l'audio au serveur
+  const handleSelect = async (audioURL: string) => {
+    const formData = new FormData();
+    const audioFile = await fetch(audioURL)
+      .then((res) => res.blob()) // Récupère le fichier en blob
+      .then((blob) => new File([blob], cv.cvName, { type: "audio/mpeg" })); // Crée un objet File à partir du blob
+
+    formData.append("audio", audioFile);
+
+    // Envoi du fichier via POST à l'API
+    const response = await fetch("http://localhost:8080/upload-audio", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      console.log("Fichier audio envoyé et traité avec succès");
+    } else {
+      console.error("Erreur lors de l'envoi du fichier audio");
+    }
+  };
+
   return (
     <Card
       id={cv.cvName}
@@ -49,10 +74,10 @@ const AudioCard: React.FC<AudioProps> = ({
           id="select"
           color="primary"
           variant="contained"
-          onClick={() => console.log("Selected")}
+          onClick={() => handleSelect(cv.audioURL)} // Envoie le fichier lorsque le bouton "Sélectionner" est cliqué
           style={{ width: "45%" }}
         >
-          Selectionner
+          Sélectionner
         </Button>
         <Tooltip title="Télécharger votre fichier">
           <Button
