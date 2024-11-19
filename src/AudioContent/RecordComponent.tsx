@@ -103,7 +103,6 @@ const RecordComponent: React.FC = () => {
 
           //Driver.js est trop bien et c'est du typescript de base
           driverObj.drive();
-
         })
         .catch((err) => {
           console.error(`The following getUserMedia error occurred: ${err}`);
@@ -167,10 +166,7 @@ const RecordComponent: React.FC = () => {
       if (file.type.startsWith("audio/")) {
         const audioURL = URL.createObjectURL(file);
         const cvName = file.name;
-        setCVs((prevCVs) => [
-          ...prevCVs,
-          { audioURL, cvName },
-        ]);
+        setCVs((prevCVs) => [...prevCVs, { audioURL, cvName }]);
       } else {
         Swal.fire({
           title: "Error!",
@@ -186,8 +182,42 @@ const RecordComponent: React.FC = () => {
     event.preventDefault();
   };
 
+  const handleFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith("audio/")) {
+        const audioURL = URL.createObjectURL(file);
+        const cvName = file.name;
+        setCVs((prevCVs) => [...prevCVs, { audioURL, cvName }]);
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "Le fichier sélectionné n'est pas un fichier audio.",
+          icon: "error",
+          confirmButtonText: "Okay",
+        });
+      }
+    }
+  };
+
   return (
     <article style={{ color: "#FFFFFF" }}>
+      <section
+        style={{
+          marginBottom: "15px",
+        }}
+      >
+        <Typography variant="h5">Selection</Typography>
+        <label htmlFor="audioFileInput">Choisissez un fichier audio :</label>
+        <input
+          type="file"
+          id="audioFileInput"
+          name="audioFile"
+          accept="audio/*"
+          onChange={handleFileInputChange}
+        />
+      </section>
       <section
         style={{
           display: "flex",
@@ -196,12 +226,8 @@ const RecordComponent: React.FC = () => {
         }}
       >
         <Typography variant="h5">Enregistrement</Typography>
-        <span style={{display:"flex", gap:"25px"}}>
-          <Button
-            id="record"
-            variant="contained"
-            disabled={recordIsDisabled}
-          >
+        <span style={{ display: "flex", gap: "25px" }}>
+          <Button id="record" variant="contained" disabled={recordIsDisabled}>
             Rec
           </Button>
           <Button

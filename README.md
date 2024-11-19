@@ -8,7 +8,6 @@ Clicker [ici](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) pour voir 
 - **[Driver.JS](https://driverjs.com/)** : Les guided tour
 - **[React](https://fr.react.dev/)** : framework React
 - **[Whisper](https://openai.com/index/whisper/)** : IA Speech-to-text
-- **[React Beautiful DND](https://github.com/atlassian/react-beautiful-dnd)** : gestion du drag and drop
 
 # Installing server manually (to change):
 
