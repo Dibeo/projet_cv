@@ -28,16 +28,23 @@ app.post("/upload-audio", upload.single("audio"), (req, res) => __awaiter(void 0
         const uploadedFilePath = req.file.path;
         console.log("Uploaded file:", uploadedFilePath);
         try {
-            exec("virtualenv -p python3.10 python_stt");
-            exec(`whisper ${uploadedFilePath} --model turbo --output_format txt`);
-            // Exécuter la commande
-            //await execPromise(command);
+            // Créer un environnement virtuel
+            yield execPromise("bash -c 'virtualenv -p python3.10 python_stt'");
+            // Exécuter la commande whisper dans l'environnement virtuel
+            const command = `bash -c 'source python_stt/bin/activate && whisper ${uploadedFilePath} --model turbo --output_format txt'`;
+            const { stdout, stderr } = yield execPromise(command);
+            if (stderr) {
+                console.error("Error processing audio:", stderr);
+                throw new Error(stderr);
+            }
+            console.log("Command output:", stdout);
         }
-        catch (_a) {
-            console.log("Erreur lors du traitement");
+        catch (error) {
+            console.error("Error processing audio:", error);
+            throw error;
         }
-        //path vers un json ou un txt pour le traitement
-        const outputFilePath = path.join("uploads", `processed_${req.file.filename}.mp3`);
+        // Chemin vers un fichier de sortie (par exemple, un fichier texte)
+        const outputFilePath = path.join("uploads", `processed_${req.file.filename}.txt`);
         console.log("Audio processing complete:", outputFilePath);
         // Répondre avec le chemin du fichier traité
         res.json({ success: true, outputFilePath });
