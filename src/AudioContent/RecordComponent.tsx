@@ -1,8 +1,3 @@
-/**
- * Audio Vizualiser : https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API
- * Record function : https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API/Using_the_MediaStream_Recording_API
- */
-
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Swal from "sweetalert2";
@@ -164,6 +159,33 @@ const RecordComponent: React.FC = () => {
     document.body.removeChild(a);
   };
 
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith("audio/")) {
+        const audioURL = URL.createObjectURL(file);
+        const cvName = file.name;
+        setCVs((prevCVs) => [
+          ...prevCVs,
+          { audioURL, cvName },
+        ]);
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "Le fichier déposé n'est pas un fichier audio.",
+          icon: "error",
+          confirmButtonText: "Okay",
+        });
+      }
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
   return (
     <article style={{ color: "#FFFFFF" }}>
       <section
@@ -175,9 +197,9 @@ const RecordComponent: React.FC = () => {
       >
         <Typography variant="h5">Enregistrement</Typography>
         <span style={{display:"flex", gap:"25px"}}>
-          <Button 
-            id="record" 
-            variant="contained" 
+          <Button
+            id="record"
+            variant="contained"
             disabled={recordIsDisabled}
           >
             Rec
@@ -210,10 +232,12 @@ const RecordComponent: React.FC = () => {
           gridTemplateColumns: "repeat(auto-fill,minmax(320px, 22vw))",
           gap: "10px",
         }}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
       >
         {cvs.map((cv, index) => (
           <AudioCard
-            key={cv.audioURL} //PErmet de faire disparaitre un warning qui veut que les composant du liste en react ts ai une key definie
+            key={cv.audioURL} //Permet de faire disparaitre un warning qui veut que les composant du liste en react ts ai une key definie
             cv={cv}
             index={index}
             handleDownload={handleDownload}
