@@ -3,7 +3,7 @@ import "./Header.css";
 
 const Header: React.FC = () => {
   return (
-    <header>
+    <header id="main-header">
       <h1>Traitement de CV</h1>
     </header>
   );

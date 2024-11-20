@@ -182,7 +182,9 @@ const RecordComponent: React.FC = () => {
     event.preventDefault();
   };
 
-  const handleFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const files = event.target.files;
     if (files && files.length > 0) {
       const file = files[0];
@@ -190,6 +192,12 @@ const RecordComponent: React.FC = () => {
         const audioURL = URL.createObjectURL(file);
         const cvName = file.name;
         setCVs((prevCVs) => [...prevCVs, { audioURL, cvName }]);
+        const fileInput = document.getElementById(
+          "audioFileInput"
+        ) as HTMLInputElement;
+        if (fileInput) {
+          fileInput.value = ""; // Réinitialise l'input fichier
+        }
       } else {
         Swal.fire({
           title: "Error!",
@@ -253,10 +261,16 @@ const RecordComponent: React.FC = () => {
       <section
         id="sound-cvs"
         style={{
-          margin: "50px",
+          margin: "25px",
+          padding: "50px",
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill,minmax(320px, 22vw))",
           gap: "10px",
+          backgroundImage: "url('./drag-and-drop.png')",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          backgroundSize: "5%",
+          border: "dotted darkgray",
         }}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
