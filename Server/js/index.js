@@ -55,7 +55,7 @@ app.post("/upload-audio", upload.single("audio"), (req, res) => __awaiter(void 0
 // Route /ping
 app.get("/ping", (req, res) => {
     console.log("Ping route called");
-    return res.send("pong\n");
+    res.send("pong\n");
 });
 // Lancement du serveur
 const PORT = 8080;

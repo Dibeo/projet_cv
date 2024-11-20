@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import multer from "multer";
 import { exec } from "child_process";
@@ -57,9 +57,9 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
 });
 
 // Route /ping
-app.get("/ping", (req: any, res: any) => {
+app.get("/ping", (req: Request, res: Response) => {
   console.log("Ping route called");
-  return res.send("pong\n");
+  res.send("pong\n");
 });
 
 // Lancement du serveur

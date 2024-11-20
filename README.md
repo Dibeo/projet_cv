@@ -9,6 +9,8 @@ Clicker [ici](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) pour voir 
 - **[React](https://fr.react.dev/)** : framework React
 - **[Whisper](https://openai.com/index/whisper/)** : IA Speech-to-text
 
+** mettre à jour la liste des bibliotheques utilisées **
+
 # Installing server manually (to change):
 
 ### Requirements:
@@ -19,13 +21,17 @@ To run the app, you need to install python 3.10 + dev toolkit + virtualenv:
 - **fedora** : ``` sudo apt install -y python3-full python3-devel python3.10 python3.10-devel python3-virtualenv ```
 - **windows** : ``` https://www.python.org/downloads/release/python-3100/ & pip install virtualenv ```
 
-### Commands to install:
+### Commands to install server:
 
 ``` sudo chmod +x intall_whisper.sh && ./installs_whisper.sh ``` in project root.
 
-# Installing server with docker (not working yet):
+# Commands to start server:
 
-read "docker stuff.txt" for instructions
+``` cd ./Server && npm run construction && npm run start ``` in project root.
+
+# Commands to start client:
+
+``` npm run start ``` in project root.
 
 # Getting Started with Create React App
 
@@ -57,19 +63,3 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
