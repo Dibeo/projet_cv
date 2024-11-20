@@ -25,11 +25,8 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
     console.log("Uploaded file:", uploadedFilePath);
 
     try {
-      // Créer un environnement virtuel
-      await execPromise("bash -c 'virtualenv -p python3.10 python_stt'");
-
       // Exécuter la commande whisper dans l'environnement virtuel
-      const command = `bash -c 'source python_stt/bin/activate && whisper ${uploadedFilePath} --model turbo --output_format txt'`;
+      const command = `source ../python_stt/bin/activate && cd ./files && whisper ../${uploadedFilePath} --model turbo --output_format txt`;
       const { stdout, stderr } = await execPromise(command);
 
       if (stderr) {

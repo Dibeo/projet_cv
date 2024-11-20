@@ -21,13 +21,7 @@ To run the app, you need to install python 3.10 + dev toolkit + virtualenv:
 
 ### Commands to install:
 
-```
-virtualenv -p python3.10 python_stt && \
-source python_stt/bin/activate && \
-python -m pip install -U pip && \
-pip install --upgrade wheel setuptools && \
-pip install openai-whisper
-```
+``` sudo chmod +x intall_whisper.sh && ./installs_whisper.sh ``` in project root.
 
 # Installing server with docker (not working yet):
 

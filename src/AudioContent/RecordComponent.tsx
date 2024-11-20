@@ -122,7 +122,7 @@ const RecordComponent: React.FC = () => {
         confirmButtonText: "Okay",
       });
     }
-  }, []);
+  }, [audioVisualizer]);
 
   const handleDeleteCV = (cvIndex: number) => {
     Swal.fire({
