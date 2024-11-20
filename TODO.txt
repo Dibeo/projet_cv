@@ -1,0 +1,5 @@
+-- Base de donnée
+-- Utilisation de Romeo (API France Travail)
+-- Docker ? Peut-être ? Eventuellement ?
+-- Mettre les changements d'interface et le drag and drop dans la branche master
+-- Indexer les mots reperés dans l'audio (timestamp) (3. du sujet)
