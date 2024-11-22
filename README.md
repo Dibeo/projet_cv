@@ -23,7 +23,7 @@ To run the app, you need to install python 3.10 + dev toolkit + virtualenv:
 
 ### Commands to install server:
 
-``` sudo chmod +x intall_whisper.sh && ./installs_whisper.sh ``` in project root.
+``` chmod +x install_whisper.sh && ./installs_whisper.sh ``` in project root.
 
 # Commands to start server:
 
