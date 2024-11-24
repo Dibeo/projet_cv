@@ -38,7 +38,7 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
       console.log("Command output:", stdout);
     } catch (error) {
       console.error("Error processing audio:", error);
-      throw error;
+      //throw error;
     }
 
     // Chemin vers un fichier de sortie (par exemple, un fichier texte)
