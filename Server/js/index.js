@@ -39,7 +39,7 @@ app.post("/upload-audio", upload.single("audio"), (req, res) => __awaiter(void 0
         }
         catch (error) {
             console.error("Error processing audio:", error);
-            //throw error;
+            throw error;
         }
         // Chemin vers un fichier de sortie (par exemple, un fichier texte)
         const outputFilePath = path.join("uploads", `processed_${req.file.filename}.txt`);

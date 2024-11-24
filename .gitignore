@@ -23,6 +23,7 @@ Server/node_modules
 
 # Project random things that does not need to be on github
 Server/uploads
+Server/files
 
 npm-debug.log*
 yarn-debug.log*

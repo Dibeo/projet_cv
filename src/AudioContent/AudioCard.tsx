@@ -1,4 +1,5 @@
 import React from "react";
+import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -29,23 +30,53 @@ const AudioCard: React.FC<AudioProps> = ({
   const handleSelect = async (audioURL: string) => {
     const formData = new FormData();
     const audioFile = await fetch(audioURL)
-      .then((res) => res.blob()) // Récupère le fichier en blob
-      .then((blob) => new File([blob], cv.cvName, { type: "audio/mpeg" })); // Crée un objet File à partir du blob
+      .then((res) => res.blob())
+      .then((blob) => new File([blob], cv.cvName, { type: "audio/mpeg" }));
 
     formData.append("audio", audioFile);
 
-    // Envoi du fichier via POST à l'API
-    const response = await fetch("http://localhost:8080/upload-audio", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      // Afficher une pop-up de chargement
+      Swal.fire({
+        title: "Chargement...",
+        text: "Votre audio est en cours de traitement",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
 
-    const data = await response.json();
+      // Envoi du fichier via POST à l'API
+      const response = await fetch("http://localhost:8080/upload-audio", {
+        method: "POST",
+        body: formData,
+      });
 
-    if (data.success) {
-      console.log("Fichier audio envoyé et traité avec succès");
-    } else {
-      console.error("Erreur lors de l'envoi du fichier audio");
+      const data = await response.json();
+
+      if (data.success) {
+        // Succès : affiche une pop-up de réussite
+        Swal.fire({
+          icon: "success",
+          title: "Succès",
+          text: "Fichier audio envoyé et traité avec succès",
+        });
+      } else {
+        // Erreur : affiche une pop-up d'erreur
+        Swal.fire({
+          icon: "error",
+          title: "Erreur",
+          text: "Une erreur est survenue lors de l'envoi de l'audio",
+        });
+      }
+    } catch (error) {
+      // Gestion des erreurs : affiche une pop-up d'erreur
+      Swal.fire({
+        icon: "error",
+        title: "Erreur",
+        text: "Impossible de traiter votre demande. Veuillez réessayer.",
+      });
+      console.error(error);
     }
   };
 
