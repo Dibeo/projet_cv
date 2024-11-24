@@ -34,16 +34,7 @@ const RecordComponent: React.FC = () => {
   useEffect(() => {
     const record = document.querySelector("#record") as HTMLButtonElement;
     const stop = document.querySelector("#stop") as HTMLButtonElement;
-
-    if (!record || !stop) {
-      console.log(
-        "Les éléments #record ou #stop ne sont pas encore disponibles."
-      );
-      return;
-    }
-
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      console.log("getUserMedia supported.");
       navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then((stream) => {
@@ -122,7 +113,7 @@ const RecordComponent: React.FC = () => {
         confirmButtonText: "Okay",
       });
     }
-  }, []);
+  }, [audioVisualizer]);
 
   const handleDeleteCV = (cvIndex: number) => {
     Swal.fire({

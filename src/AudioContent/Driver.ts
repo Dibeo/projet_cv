@@ -8,6 +8,8 @@ const driverObj = driver({
   prevBtnText: 'Precedent',
   doneBtnText: 'Terminer',
   steps: [
+    { element: '#audioFileInput', popover: { title: 'Fichier', description: 'Si vous avez déjà un fichier audio pré-enregistrer, sélectionner le depuis ce bouton.' } },
+    { element: '#sound-cvs', popover: { title: 'Glisser-Déposer', description: 'Sinon vous pouvez glisser-déposer votre fichier.' } },
     { element: '#record', popover: { title: 'Enregistrer', description: 'Pour lancer l\'enregistrement.' } },
     { element: '#stop', popover: { title: 'Arrêter', description: 'Pour arrêter d\'enregistrer.' } },
     { element: '#Exemple', popover: { title: 'Résultat', description: 'Ici se trouve votre enregistrement (celui-ci est un exemple).' } },
