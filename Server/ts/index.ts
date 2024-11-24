@@ -26,7 +26,8 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
 
     try {
       // Exécuter la commande whisper dans l'environnement virtuel
-      const command = `source ../python_stt/bin/activate && cd ./files && whisper ../${uploadedFilePath} --model turbo --output_format txt`;
+      const command = `bash -c "source ../python_stt/bin/activate && cd ./files && whisper ../${uploadedFilePath} --model turbo --output_format txt"`;
+
       const { stdout, stderr } = await execPromise(command);
 
       if (stderr) {
@@ -51,7 +52,6 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
     // Répondre avec le chemin du fichier traité
     res.json({ success: true, outputFilePath });
   } catch (error) {
-    console.error("Error uploading audio:", error);
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 });

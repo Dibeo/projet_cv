@@ -29,7 +29,7 @@ app.post("/upload-audio", upload.single("audio"), (req, res) => __awaiter(void 0
         console.log("Uploaded file:", uploadedFilePath);
         try {
             // Exécuter la commande whisper dans l'environnement virtuel
-            const command = `source ../python_stt/bin/activate && cd ./files && whisper ../${uploadedFilePath} --model turbo --output_format txt`;
+            const command = `bash -c "source ../python_stt/bin/activate && cd ./files && whisper ../${uploadedFilePath} --model turbo --output_format txt"`;
             const { stdout, stderr } = yield execPromise(command);
             if (stderr) {
                 console.error("Error processing audio:", stderr);
@@ -48,7 +48,6 @@ app.post("/upload-audio", upload.single("audio"), (req, res) => __awaiter(void 0
         res.json({ success: true, outputFilePath });
     }
     catch (error) {
-        console.error("Error uploading audio:", error);
         res.status(500).json({ success: false, error: "Internal Server Error" });
     }
 }));
