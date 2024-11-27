@@ -75,3 +75,34 @@ const PORT = 8080;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+interface api_response {
+  scope: string,
+  expires_in: string,
+  token_type: string,
+  access_token: string
+}
+
+function getAccessToken(): Promise<api_response> {
+  let client_id: string = "PAR_projetanalysecv_74d1f244e9ee006caa6f515e5d58b48fc47230e0230a234302146b184257bf1e";
+  let client_secret: string = "f9c068ddb822c9a758dd12c0ca98e0f8511336032ea36d91ca8ebf1031d4c652"
+
+  const headers: Headers = new Headers()
+
+  const request: RequestInfo = new Request('https://entreprise.francetravail.fr/connexion/oauth2/access_token?realm=%2Fpartenaire', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'x-www-form-urlencoded',
+    },
+    body: 'grant_type=client_credentials&client_id=' + client_id + '&client_secret=' + client_secret + '&scope=api_romeov2',
+  })
+
+  return fetch(request)
+    // the JSON body is taken from the response
+    .then(res => res.json())
+    .then(res => {
+      // The response has an `any` type, so we need to cast
+      // it to the `api_response` type, and return it from the promise
+      return res as api_response
+    })
+}
