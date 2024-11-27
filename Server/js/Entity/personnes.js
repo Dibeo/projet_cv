@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Entity, PrimaryColumn, Column, OneToOne } from "typeorm";
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import Ville from "./villes.js";
 let Personne = class Personne {
     codP;
@@ -33,8 +33,8 @@ __decorate([
     __metadata("design:type", String)
 ], Personne.prototype, "prenom", void 0);
 __decorate([
-    Column({ type: "number", length: 11 }),
-    __metadata("design:type", Number)
+    Column({ type: "text" }),
+    __metadata("design:type", String)
 ], Personne.prototype, "tel", void 0);
 __decorate([
     Column({ type: "text" }),
@@ -49,11 +49,12 @@ __decorate([
     __metadata("design:type", String)
 ], Personne.prototype, "codePos", void 0);
 __decorate([
-    Column({ type: "number" }),
+    Column({ type: "integer" }),
     __metadata("design:type", Number)
 ], Personne.prototype, "numAdd", void 0);
 __decorate([
-    OneToOne(() => Ville),
+    ManyToOne(() => Ville),
+    JoinColumn({ name: "codV" }),
     __metadata("design:type", Ville)
 ], Personne.prototype, "ville", void 0);
 Personne = __decorate([

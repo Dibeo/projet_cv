@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, OneToOne } from "typeorm";
+import { Entity, PrimaryColumn, Column, ManyToOne, OneToOne, JoinColumn } from "typeorm";
 import Ville from "./villes.js";
 
 @Entity("personnes")
@@ -12,8 +12,8 @@ export default class Personne {
   @Column({ type: "text", nullable: false })
   prenom!: string;
 
-  @Column({type: "number", length: 11})
-  tel!: number;
+  @Column({type: "text"})
+  tel!: string;
 
   @Column({type: "text"})
   mail!: string;
@@ -24,9 +24,10 @@ export default class Personne {
   @Column({type: "text", length: 5})
   codePos!: string;
 
-  @Column({type:"number"})
+  @Column({type:"integer"})
   numAdd!: number;
   
-  @OneToOne(() => Ville)
+  @ManyToOne(() => Ville)
+  @JoinColumn({ name: "codV" })
   ville!: Ville;
 }
