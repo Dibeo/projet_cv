@@ -5,6 +5,7 @@ import { exec } from "child_process";
 import util from "util";
 import path from "path";
 import databaseGest from "./database.js";
+import { access } from 'fs';
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -83,7 +84,7 @@ interface api_response {
   access_token: string
 }
 
-function getAccessToken(): Promise<api_response> {
+async function getAccessToken(): Promise<api_response> {
   let client_id: string = "PAR_projetanalysecv_74d1f244e9ee006caa6f515e5d58b48fc47230e0230a234302146b184257bf1e";
   let client_secret: string = "f9c068ddb822c9a758dd12c0ca98e0f8511336032ea36d91ca8ebf1031d4c652"
 
@@ -92,12 +93,12 @@ function getAccessToken(): Promise<api_response> {
   const request: RequestInfo = new Request('https://entreprise.francetravail.fr/connexion/oauth2/access_token?realm=%2Fpartenaire', {
     method: 'POST',
     headers: {
-      'Content-Type': 'x-www-form-urlencoded',
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: 'grant_type=client_credentials&client_id=' + client_id + '&client_secret=' + client_secret + '&scope=api_romeov2',
   })
 
-  return fetch(request)
+  const result = await fetch(request)
     // the JSON body is taken from the response
     .then(res => res.json())
     .then(res => {
@@ -105,4 +106,9 @@ function getAccessToken(): Promise<api_response> {
       // it to the `api_response` type, and return it from the promise
       return res as api_response
     })
+  return result;
 }
+
+const fetch_auth: api_response = await getAccessToken();
+const access_token: string = fetch_auth.access_token;
+console.log("Access token: " + access_token);
