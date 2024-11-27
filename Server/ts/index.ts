@@ -5,11 +5,20 @@ import { exec } from "child_process";
 import util from "util";
 import path from "path";
 import databaseGest from "./database.js";
-import { access } from 'fs';
+import AppDataSource from "./AppDataSource.js";
+import { fetchAllTablesData } from "./databaseFunctions.js";
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
 const execPromise = util.promisify(exec);
+
+AppDataSource.initialize()
+  .then(() => {
+    console.log("Base de données connectée");
+  })
+  .catch((error) =>
+    console.error("Erreur de connexion à la base de données :", error)
+  );
 
 // Configuration CORS pour que le fetch avec un localhost fonctionne
 app.use(
@@ -65,10 +74,21 @@ app.get("/ping", (req: Request, res: Response) => {
 });
 
 // Route /database
-app.get("/database", (req: Request, res: Response) => {
-  console.log("DataBase function launch");
+app.get("/database-create", (req: Request, res: Response) => {
+  console.log("DataBase Creation launch");
   databaseGest();
-  res.send("database\n");
+  res.send("database created\n");
+});
+
+// fetch toutes les donnes de la base de données
+app.get("/database", async (req: Request, res: Response) => {
+  console.log("DataBase function launch");
+  try {
+    const data = await fetchAllTablesData(); // Récupérer les données
+    res.json(data); // Envoyer les données en réponse
+  } catch (error) {
+    res.status(500).json({ error: "Erreur lors de la récupération des données" });
+  }
 });
 
 // Lancement du serveur
@@ -78,34 +98,45 @@ app.listen(PORT, () => {
 });
 
 interface api_response {
-  scope: string,
-  expires_in: string,
-  token_type: string,
-  access_token: string
+  scope: string;
+  expires_in: string;
+  token_type: string;
+  access_token: string;
 }
 
+// Gestion de Roméo
 async function getAccessToken(): Promise<api_response> {
-  let client_id: string = "PAR_projetanalysecv_74d1f244e9ee006caa6f515e5d58b48fc47230e0230a234302146b184257bf1e";
-  let client_secret: string = "f9c068ddb822c9a758dd12c0ca98e0f8511336032ea36d91ca8ebf1031d4c652"
+  let client_id: string =
+    "PAR_projetanalysecv_74d1f244e9ee006caa6f515e5d58b48fc47230e0230a234302146b184257bf1e";
+  let client_secret: string =
+    "f9c068ddb822c9a758dd12c0ca98e0f8511336032ea36d91ca8ebf1031d4c652";
 
-  const headers: Headers = new Headers()
+  const headers: Headers = new Headers();
 
-  const request: RequestInfo = new Request('https://entreprise.francetravail.fr/connexion/oauth2/access_token?realm=%2Fpartenaire', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: 'grant_type=client_credentials&client_id=' + client_id + '&client_secret=' + client_secret + '&scope=api_romeov2',
-  })
+  const request: RequestInfo = new Request(
+    "https://entreprise.francetravail.fr/connexion/oauth2/access_token?realm=%2Fpartenaire",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body:
+        "grant_type=client_credentials&client_id=" +
+        client_id +
+        "&client_secret=" +
+        client_secret +
+        "&scope=api_romeov2",
+    }
+  );
 
   const result = await fetch(request)
     // the JSON body is taken from the response
-    .then(res => res.json())
-    .then(res => {
+    .then((res) => res.json())
+    .then((res) => {
       // The response has an `any` type, so we need to cast
       // it to the `api_response` type, and return it from the promise
-      return res as api_response
-    })
+      return res as api_response;
+    });
   return result;
 }
 

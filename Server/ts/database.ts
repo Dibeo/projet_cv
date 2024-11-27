@@ -4,8 +4,6 @@ import Ville from "./Entity/villes.js";
 
 const databaseGest = async () => {
   try {
-    await AppDataSource.initialize();
-    console.log("Base de données initialisée et connectée");
 
     const repositoryVille = AppDataSource.getRepository(Ville);
     const newVille = repositoryVille.create({
@@ -32,8 +30,8 @@ const databaseGest = async () => {
   } catch (error) {
     console.error("Erreur lors de l'initialisation de la base de données :", error);
   } finally {
-    await AppDataSource.destroy();
-    console.log("Connexion fermée");
+    //await AppDataSource.destroy();
+    //console.log("Connexion fermée");
   }
 };
 
