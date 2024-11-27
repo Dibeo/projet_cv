@@ -82,4 +82,4 @@ async function getAccessToken() {
 }
 const fetch_auth = await getAccessToken();
 const access_token = fetch_auth.access_token;
-console.log(access_token);
+console.log("Access token: " + access_token);

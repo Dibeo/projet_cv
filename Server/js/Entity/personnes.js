@@ -10,6 +10,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Entity, PrimaryColumn, Column, OneToOne } from "typeorm";
 import Ville from "./villes.js";
 let Personne = class Personne {
+    codP;
+    nom;
+    prenom;
+    tel;
+    mail;
+    nomRue;
+    codePos;
+    numAdd;
+    ville;
 };
 __decorate([
     PrimaryColumn({ length: 8 }),

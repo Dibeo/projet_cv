@@ -11,6 +11,10 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
 import Personne from "./personnes.js";
 import Competence from "./competences.js";
 let PersonneCompetence = class PersonneCompetence {
+    id;
+    personne;
+    competence;
+    timecode; // Timecode en secondes pour cette compétence d'une personne
 };
 __decorate([
     PrimaryGeneratedColumn(),

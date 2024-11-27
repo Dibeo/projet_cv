@@ -1,18 +1,3 @@
-<<<<<<< HEAD
-import sqlite3 from "sqlite3";
-const databaseGest = () => {
-    const db = new sqlite3.Database("database/result_c.db", sqlite3.OPEN_READWRITE);
-=======
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
->>>>>>> origin/DataBase
-};
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import Personne from "./Entity/personnes.js";
@@ -26,10 +11,10 @@ const AppDataSource = new DataSource({
     entities: [Personne],
 });
 // Fonction principale pour initialiser la base de données
-const databaseGest = () => __awaiter(void 0, void 0, void 0, function* () {
+const databaseGest = async () => {
     try {
         // Initialiser la connexion
-        yield AppDataSource.initialize();
+        await AppDataSource.initialize();
         console.log("Base de données initialisée et connectée");
         // Vérifier si des opérations supplémentaires sont nécessaires
         const repositoryV = AppDataSource.getRepository(Ville);
@@ -38,15 +23,15 @@ const databaseGest = () => __awaiter(void 0, void 0, void 0, function* () {
             codV: "P0120120",
             nomV: "Ville",
         });
-        yield repositoryV.save(newVille);
+        await repositoryV.save(newVille);
         const repositoryP = AppDataSource.getRepository(Personne);
         const newPerson = repositoryP.create({
             codP: "12345678",
             nom: "Dupont",
             prenom: "Jean",
-            ville: "P0120120",
+            ville: newVille,
         });
-        yield repositoryP.save(newPerson);
+        await repositoryP.save(newPerson);
         console.log("Nouvelle personne ajoutée :", newPerson);
     }
     catch (error) {
@@ -54,8 +39,8 @@ const databaseGest = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     finally {
         // Fermer la connexion (facultatif dans TypeORM car elle reste gérée par le DataSource)
-        yield AppDataSource.destroy();
+        await AppDataSource.destroy();
         console.log("Connexion fermée");
     }
-});
+};
 export default databaseGest;

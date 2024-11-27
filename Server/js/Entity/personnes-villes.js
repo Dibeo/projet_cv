@@ -11,6 +11,9 @@ import { Entity, PrimaryGeneratedColumn, OneToOne } from "typeorm";
 import Personne from "./personnes.js";
 import Ville from "./villes.js";
 let PersonneCompetence = class PersonneCompetence {
+    id;
+    personne;
+    ville;
 };
 __decorate([
     PrimaryGeneratedColumn(),

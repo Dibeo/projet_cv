@@ -9,6 +9,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Entity, PrimaryColumn, Column } from "typeorm";
 let Ville = class Ville {
+    codV;
+    nomV;
 };
 __decorate([
     PrimaryColumn({ length: 8 }),
