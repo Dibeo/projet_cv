@@ -113,7 +113,7 @@ const RecordComponent: React.FC = () => {
         confirmButtonText: "Okay",
       });
     }
-  }, [audioVisualizer]);
+  }, []); //C'est ca qui fait de la merde avec le driver
 
   const handleDeleteCV = (cvIndex: number) => {
     Swal.fire({
