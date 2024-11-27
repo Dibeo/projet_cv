@@ -13,6 +13,7 @@ import multer from "multer";
 import { exec } from "child_process";
 import util from "util";
 import path from "path";
+import databaseGest from "./database.js";
 const app = express();
 const upload = multer({ dest: "uploads/" });
 const execPromise = util.promisify(exec);
@@ -39,7 +40,7 @@ app.post("/upload-audio", upload.single("audio"), (req, res) => __awaiter(void 0
         }
         catch (error) {
             console.error("Error processing audio:", error);
-            throw error;
+            //throw error;
         }
         // Chemin vers un fichier de sortie (par exemple, un fichier texte)
         const outputFilePath = path.join("uploads", `processed_${req.file.filename}.txt`);
@@ -55,6 +56,12 @@ app.post("/upload-audio", upload.single("audio"), (req, res) => __awaiter(void 0
 app.get("/ping", (req, res) => {
     console.log("Ping route called");
     res.send("pong\n");
+});
+// Route /database
+app.get("/database", (req, res) => {
+    console.log("DataBase function launch");
+    databaseGest();
+    res.send("database\n");
 });
 // Lancement du serveur
 const PORT = 8080;

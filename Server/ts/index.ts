@@ -4,6 +4,7 @@ import multer from "multer";
 import { exec } from "child_process";
 import util from "util";
 import path from "path";
+import databaseGest from "./database.js";
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -60,6 +61,13 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
 app.get("/ping", (req: Request, res: Response) => {
   console.log("Ping route called");
   res.send("pong\n");
+});
+
+// Route /database
+app.get("/database", (req: Request, res: Response) => {
+  console.log("DataBase function launch");
+  databaseGest();
+  res.send("database\n");
 });
 
 // Lancement du serveur
