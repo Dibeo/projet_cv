@@ -1,0 +1,1 @@
+{"root":["./src/App.test.tsx","./src/App.tsx","./src/main.tsx","./src/react-app-env.d.ts","./src/setupTests.ts","./src/AudioContent/AudioCard.tsx","./src/AudioContent/AudioVisualizer.ts","./src/AudioContent/Driver.ts","./src/AudioContent/RecordComponent.tsx","./src/MainContent/Footer.tsx","./src/MainContent/Header.tsx"],"version":"5.7.2"}
