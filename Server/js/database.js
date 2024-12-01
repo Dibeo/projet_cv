@@ -1,10 +1,15 @@
 import AppDataSource from "./AppDataSource.js";
 import Personne from "./Entity/personnes.js";
 import Ville from "./Entity/villes.js";
-import Competence from "./Entity/competences.js"; // Assurez-vous d'importer l'entité Competence
+import Competence from "./Entity/competences.js";
 import PersonneCompetence from "./Entity/personnes-competences.js";
+import { dropTables } from "./databaseFunctions.js";
 const databaseGest = async () => {
     try {
+        // Supprimer les tables existantes
+        console.log("Suppression des tables...");
+        await dropTables();
+        console.log("Tables supprimées avec succès.");
         // Repositories
         const villeRepository = AppDataSource.getRepository(Ville);
         const personneRepository = AppDataSource.getRepository(Personne);
@@ -47,17 +52,17 @@ const databaseGest = async () => {
         const pc1 = personneCompetenceRepository.create({
             personne: personneJean,
             competence: competenceJS,
-            timecode: 1200, // 20 minutes
+            timecode: 124, // en secondes
         });
         const pc2 = personneCompetenceRepository.create({
             personne: personneJean,
             competence: competenceDB,
-            timecode: 600, // 10 minutes
+            timecode: 64,
         });
         const pc3 = personneCompetenceRepository.create({
             personne: personneMarie,
             competence: competenceTS,
-            timecode: 1800, // 30 minutes
+            timecode: 180,
         });
         await personneCompetenceRepository.save([pc1, pc2, pc3]);
         console.log("Données insérées avec succès !");

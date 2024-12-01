@@ -75,7 +75,7 @@ app.get("/ping", (req: Request, res: Response) => {
 
 // Route /database
 app.get("/database-create", (req: Request, res: Response) => {
-  console.log("DataBase Creation launch");
+  console.log("DataBase Creation launch \n\t\t /!\ attention detruit tous\n");
   databaseGest();
   res.send("database created\n");
 });
