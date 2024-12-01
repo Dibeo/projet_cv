@@ -6,7 +6,7 @@ import util from "util";
 import path from "path";
 import databaseGest from "./database.js";
 import AppDataSource from "./AppDataSource.js";
-import { fetchAllTablesData } from "./databaseFunctions.js";
+import { dataToHTML, fetchAllTablesData } from "./databaseFunctions.js";
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -81,136 +81,18 @@ app.get("/database-create", (req: Request, res: Response) => {
 });
 
 // fetch toutes les donnes de la base de données
-app.get("/database", async (req: Request, res: Response) => {
-  console.log("DataBase function launch");
+app.get("/database", async (req, res) => {
   try {
-    const data = await fetchAllTablesData();
-    /* 
-      Permet de voir tous le contenue de la bdd
-    */
+    const data = await fetchAllTablesData(); // Récupérer les données
+    const html = dataToHTML(data);
 
-    // Générer le tableau HTML pour les villes
-    const villesTable = `
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Code</th>
-            <th>Nom</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${data.villes
-            .map(
-              (ville) => `
-            <tr>
-              <td>${ville.codV}</td>
-              <td>${ville.nomV}</td>
-            </tr>
-          `
-            )
-            .join("")}
-        </tbody>
-      </table>`;
+    res.send(html); // Renvoyer le HTML
 
-    // Générer le tableau HTML pour les personnes
-    const personnesTable = `
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Code</th>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Ville</th>
-            <th>Adresse</th>
-            <th>Téléphone</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${data.personnes
-            .map(
-              (personne) => `
-            <tr>
-              <td>${personne.codP}</td>
-              <td>${personne.nom}</td>
-              <td>${personne.prenom}</td>
-              <td>${personne.ville?.nomV || "Non spécifiée"}</td>
-              <td>${personne.numAdd} ${personne.nomRue}, ${personne.codePos}</td>
-              <td>${personne.tel}</td>
-              <td>${personne.mail}</td>
-            </tr>
-          `
-            )
-            .join("")}
-        </tbody>
-      </table>`;
-
-    // Générer le tableau HTML pour les compétences
-    const competencesTable = `
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Code</th>
-            <th>Intitulé</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${data.competences
-            .map(
-              (competence) => `
-            <tr>
-              <td>${competence.codC}</td>
-              <td>${competence.intitule}</td>
-            </tr>
-          `
-            )
-            .join("")}
-        </tbody>
-      </table>`;
-
-    // Générer la réponse HTML complète
-    const htmlResponse = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Données de la Base</title>
-        <style>
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-          }
-          th, td {
-            padding: 8px;
-            text-align: left;
-            border: 1px solid #ddd;
-          }
-          th {
-            background-color: #f4f4f4;
-          }
-        </style>
-      </head>
-      <body>
-        <h1>Villes</h1>
-        ${villesTable}
-
-        <h1>Personnes</h1>
-        ${personnesTable}
-
-        <h1>Compétences</h1>
-        ${competencesTable}
-      </body>
-      </html>`;
-
-    // Envoyer la réponse HTML
-    res.send(htmlResponse);
   } catch (error) {
-    console.error("Erreur lors de la récupération des données :", error);
-    res.status(500).send("<h1>Erreur lors de la récupération des données</h1>");
+    res.status(500).json({ error: "Erreur lors de la récupération des données" });
   }
 });
+
 
 
 // Lancement du serveur

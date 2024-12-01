@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column } from "typeorm";
 import Personne from "./personnes.js";
 import Competence from "./competences.js";
 
@@ -7,10 +7,12 @@ export default class PersonneCompetence {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToOne(() => Personne)
+  @ManyToOne(() => Personne, { nullable: false })
+  @JoinColumn({ name: "codP" })
   personne!: Personne;
 
-  @OneToOne(() => Competence)
+  @ManyToOne(() => Competence, { nullable: false })
+  @JoinColumn({ name: "codC" })
   competence!: Competence;
 
   @Column({ type: "int", nullable: false })

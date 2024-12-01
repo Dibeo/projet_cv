@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column } from "typeorm";
 import Personne from "./personnes.js";
 import Competence from "./competences.js";
 let PersonneCompetence = class PersonneCompetence {
@@ -21,11 +21,13 @@ __decorate([
     __metadata("design:type", Number)
 ], PersonneCompetence.prototype, "id", void 0);
 __decorate([
-    OneToOne(() => Personne),
+    ManyToOne(() => Personne, { nullable: false }),
+    JoinColumn({ name: "codP" }),
     __metadata("design:type", Personne)
 ], PersonneCompetence.prototype, "personne", void 0);
 __decorate([
-    OneToOne(() => Competence),
+    ManyToOne(() => Competence, { nullable: false }),
+    JoinColumn({ name: "codC" }),
     __metadata("design:type", Competence)
 ], PersonneCompetence.prototype, "competence", void 0);
 __decorate([
