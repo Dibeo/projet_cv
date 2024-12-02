@@ -79,6 +79,6 @@ export const dropTables = async () => {
         console.error("Erreur lors de la suppression des tables :", error);
     }
     finally {
-        //await queryRunner.release();
+        await queryRunner.release();
     }
 };

@@ -7,10 +7,6 @@ import { dropTables } from "./databaseFunctions.js";
 
 const databaseGest = async () => {
   try {
-    // Supprimer les tables existantes
-    console.log("Suppression des tables...");
-    await dropTables();
-    console.log("Tables supprimées avec succès.");
 
     // Repositories
     const villeRepository = AppDataSource.getRepository(Ville);
