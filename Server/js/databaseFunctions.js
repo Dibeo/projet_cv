@@ -65,20 +65,3 @@ export const dataToHTML = (data) => {
     html += `</table>`;
     return html;
 };
-export const dropTables = async () => {
-    const queryRunner = AppDataSource.createQueryRunner();
-    await queryRunner.connect();
-    try {
-        await queryRunner.query(`DROP TABLE IF EXISTS personne_competence`);
-        await queryRunner.query(`DROP TABLE IF EXISTS personnes`);
-        await queryRunner.query(`DROP TABLE IF EXISTS competences`);
-        await queryRunner.query(`DROP TABLE IF EXISTS villes`);
-        console.log("Tables supprimées avec succès.");
-    }
-    catch (error) {
-        console.error("Erreur lors de la suppression des tables :", error);
-    }
-    finally {
-        await queryRunner.release();
-    }
-};

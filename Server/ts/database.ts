@@ -3,7 +3,6 @@ import Personne from "./Entity/personnes.js";
 import Ville from "./Entity/villes.js";
 import Competence from "./Entity/competences.js";
 import PersonneCompetence from "./Entity/personnes-competences.js";
-import { dropTables } from "./databaseFunctions.js";
 
 const databaseGest = async () => {
   try {

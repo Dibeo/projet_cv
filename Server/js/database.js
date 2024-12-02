@@ -5,10 +5,6 @@ import Competence from "./Entity/competences.js";
 import PersonneCompetence from "./Entity/personnes-competences.js";
 const databaseGest = async () => {
     try {
-        // Supprimer les tables existantes
-        //console.log("Suppression des tables...");
-        //await dropTables();
-        //console.log("Tables supprimées avec succès.");
         // Repositories
         const villeRepository = AppDataSource.getRepository(Ville);
         const personneRepository = AppDataSource.getRepository(Personne);
