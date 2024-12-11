@@ -20,6 +20,7 @@ dist
 .env.production.local
 
 # Dependency directories
+venv
 node_modules
 Server/node_modules
 package-lock.json

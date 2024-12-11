@@ -19,24 +19,25 @@ FR: Clicker [ici](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) pour v
 - **[Whisper](https://openai.com/index/whisper/)** : IA Speech-to-text
 - **[LLama AI](https://www.llama.com)** : IA Text summarizing
 - **[ROMEOv2](https://francetravail.io/data/api/romeo-2)** : FranceTravail API to extract skills
-
-** mettre à jour la liste des bibliotheques utilisées **
+- **[SQLite](https://www.sqlite.org/)** : Database
+- **[typeORM](https://typeorm.io/)** : ORM
 
 # Installing server manually (to change):
 
 ### Requirements:
     
-EN: To run the app, you need to install python 3.10 + dev toolkit + virtualenv:
+EN: To run the app, you need to install python >= 3.10 + virtualenv:
 
-FR: Pour utiliser l'application, vous dervrez installer python 3.10 + dev toolkit + virtualenv:
+FR: Pour utiliser l'application, vous dervrez installer python >= 3.10 + virtualenv:
 
-- **ubuntu/debian** : ``` sudo apt install -y python3-full python3-dev python3.10 python3.10-dev python3-virtualenv ```
-- **fedora** : ``` sudo apt install -y python3-full python3-devel python3.10 python3.10-devel python3-virtualenv ```
-- **windows** : ``` https://www.python.org/downloads/release/python-3100/ & pip install virtualenv ```
+- **ubuntu 24** : (ex for python 12): ``` sudo apt install -y python3-full python3-dev python3.12 python3.12-dev python3-virtualenv ```
+- **debian 12** : (ex for python 10): ``` sudo apt install -y python3-full python3-dev python3.10 python3.10-dev python3-virtualenv ```
+- **fedora 40** : (ex for python 12): ``` sudo apt install -y python3-full python3-devel python3.12 python3.12-devel python3-virtualenv ```
+- **windows** : (ex for python 12): ``` https://www.python.org/downloads/release/python-3120/ & pip3 install virtualenv ```
 
 ### Commands to install server:
 
-``` chmod +x install_whisper.sh && ./installs_whisper.sh ``` in project root.
+``` chmod +x install_whisper.sh && ./install_whisper.sh ``` or ```bash install_whisper.sh``` in project root.
 
 # Commands to start server:
 
