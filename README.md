@@ -10,7 +10,7 @@ EN: Click [here](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) to acce
 
 FR: Clicker [ici](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) pour voir le sujet complet.
 
-# Bibliothèques utilisées :
+# Used software/libraries :
 - **[Material UI](https://mui.com/)** : Styling
 - **[SweetAlert 2](https://sweetalert2.github.io/)** : Alerts management
 - **[Driver.JS](https://driverjs.com/)** : Guided tours
