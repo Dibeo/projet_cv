@@ -7,25 +7,34 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
+import { Entity, ManyToOne, JoinColumn, PrimaryColumn, Column } from "typeorm";
 import Personne from "./personnes.js";
 import Competence from "./competences.js";
 let PersonneCompetence = class PersonneCompetence {
-    id;
+    codP;
+    codC;
     personne;
     competence;
     timecode; // Timecode en secondes pour cette compétence d'une personne
 };
 __decorate([
-    PrimaryGeneratedColumn(),
+    PrimaryColumn({ type: "int" }) // Clé primaire pour codP
+    ,
     __metadata("design:type", Number)
-], PersonneCompetence.prototype, "id", void 0);
+], PersonneCompetence.prototype, "codP", void 0);
 __decorate([
-    OneToOne(() => Personne),
+    PrimaryColumn({ type: "int" }) // Clé primaire pour codC
+    ,
+    __metadata("design:type", Number)
+], PersonneCompetence.prototype, "codC", void 0);
+__decorate([
+    ManyToOne(() => Personne, { nullable: false }),
+    JoinColumn({ name: "codP" }),
     __metadata("design:type", Personne)
 ], PersonneCompetence.prototype, "personne", void 0);
 __decorate([
-    OneToOne(() => Competence),
+    ManyToOne(() => Competence, { nullable: false }),
+    JoinColumn({ name: "codC" }),
     __metadata("design:type", Competence)
 ], PersonneCompetence.prototype, "competence", void 0);
 __decorate([

@@ -6,7 +6,7 @@ import util from "util";
 import path from "path";
 import databaseGest from "./database.js";
 import AppDataSource from "./AppDataSource.js";
-import { fetchAllTablesData } from "./databaseFunctions.js";
+import { dataToHTML, fetchAllTablesData } from "./databaseFunctions.js";
 const app = express();
 const upload = multer({ dest: "uploads/" });
 const execPromise = util.promisify(exec);
@@ -57,16 +57,16 @@ app.get("/ping", (req, res) => {
 });
 // Route /database
 app.get("/database-create", (req, res) => {
-    console.log("DataBase Creation launch");
+    console.log("DataBase Creation launch \n\t\t /!\ attention detruit tous\n");
     databaseGest();
     res.send("database created\n");
 });
 // fetch toutes les donnes de la base de données
 app.get("/database", async (req, res) => {
-    console.log("DataBase function launch");
     try {
         const data = await fetchAllTablesData(); // Récupérer les données
-        res.json(data); // Envoyer les données en réponse
+        const html = dataToHTML(data);
+        res.send(html); // Renvoyer le HTML
     }
     catch (error) {
         res.status(500).json({ error: "Erreur lors de la récupération des données" });

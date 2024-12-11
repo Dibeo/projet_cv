@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "configuration": "tsc --showConfig",
-    "build": "tsc",
+    "construction": "tsc",
     "initialization": "tsc --init",
     "start": "node js/index.js"
   },
