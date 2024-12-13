@@ -1,4 +1,5 @@
--- Base de donnée (en cours)
 -- Utilisation de Romeo (API France Travail) (en cours)
--- Docker ? Peut-être ? Eventuellement ?
+-- Docker du serveur pour simplifier l'installation
 -- Indexer les mots reperés dans l'audio (timestamp) (3. du sujet)
+-- continuer le travail sur Ollama (en cours su la branche Tests-Ollama)
+-- améliorer l'apparence su site
