@@ -17,7 +17,7 @@ FR: Clicker [ici](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) pour v
 - **[React](https://fr.react.dev/)** : framework React
 - **[Vite](https://vite.dev/)** : Vite (project boostrap)
 - **[Whisper](https://openai.com/index/whisper/)** : IA Speech-to-text
-- **[LLama AI](https://www.llama.com)** : IA Text summarizing
+- **[Ollama JS](https://github.com/ollama/ollama-js)** : IA Text summarizing
 - **[ROMEOv2](https://francetravail.io/data/api/romeo-2)** : FranceTravail API to extract skills
 - **[SQLite](https://www.sqlite.org/)** : Database
 - **[typeORM](https://typeorm.io/)** : ORM
@@ -26,13 +26,16 @@ FR: Clicker [ici](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) pour v
 
 ### Requirements:
     
-EN: To run the app, you need to install python >= 3.10 + virtualenv:
+EN: To run the app, you need to install python >= 3.10 + virtualenv + ffmpeg:
 
-FR: Pour utiliser l'application, vous dervrez installer python >= 3.10 + virtualenv:
+FR: Pour utiliser l'application, vous dervrez installer python >= 3.9 <= 3.11 > + virtualenv:
 
-- **ubuntu 24** : (ex for python 12): ``` sudo apt install -y python3-full python3-dev python3.12 python3.12-dev python3-virtualenv ```
-- **debian 12** : (ex for python 10): ``` sudo apt install -y python3-full python3-dev python3.10 python3.10-dev python3-virtualenv ```
-- **fedora 40** : (ex for python 12): ``` sudo apt install -y python3-full python3-devel python3.12 python3.12-devel python3-virtualenv ```
+- **ubuntu** : 
+``` sudo add-apt-repository ppa:deadsnakes/ppa ```
+``` sudo apt-get update ```
+``` sudo apt install -y python3-full python3-dev python3.11 python3-virtualenv + ffmpeg ```
+- **debian 12** : (ex for python 11): ``` sudo apt install -y python3-full python3-dev python3.11 python3.11-dev python3-virtualenv + ffmpeg ```
+- **fedora 40/41** : (ex for python 10): ``` sudo apt install -y python3-full python3-devel python3.10 python3.10-devel python3-virtualenv + ffmpeg ```
 - **windows** : (ex for python 12): ``` https://www.python.org/downloads/release/python-3120/ & pip3 install virtualenv ```
 
 ### Commands to install server:

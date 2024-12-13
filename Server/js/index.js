@@ -7,6 +7,8 @@ import path from "path";
 import databaseGest from "./database.js";
 import AppDataSource from "./AppDataSource.js";
 import { dataToHTML, fetchAllTablesData } from "./databaseFunctions.js";
+import ollama from 'ollama';
+import * as fs from 'fs';
 const app = express();
 const upload = multer({ dest: "uploads/" });
 const execPromise = util.promisify(exec);
@@ -26,23 +28,24 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
         // Access the uploaded file using req.file
         const uploadedFilePath = req.file.path;
         console.log("Uploaded file:", uploadedFilePath);
-        try {
-            // Exécuter la commande whisper dans l'environnement virtuel
-            const command = `bash -c "source ../python_stt/bin/activate && cd ./files && whisper ../${uploadedFilePath} --model turbo --output_format txt"`;
-            const { stdout, stderr } = await execPromise(command);
-            if (stderr) {
-                console.error("Error processing audio:", stderr);
-                throw new Error(stderr);
-            }
-            console.log("Command output:", stdout);
+        // try {
+        // Exécuter la commande whisper dans l'environnement virtuel
+        const command = `bash -c "source ../venv/bin/activate && mkdir -p uploads &&  cd ./uploads && whisper ../${uploadedFilePath} --model turbo --output_format txt"`;
+        const { stdout, stderr } = await execPromise(command);
+        /* if (stderr) {
+          console.error("Error processing audio:", stderr);
+          throw new Error(stderr);
         }
-        catch (error) {
-            console.error("Error processing audio:", error);
-            //throw error;
-        }
+  
+        console.log("Command output:", stdout);
+      } catch (error) {
+        console.error("Error processing audio:", error);
+        //throw error;
+      } */ // Il y a un problème avec pytorch qui renvoie une erreur alors que la conversion a lieu normallement, j'essaierai de résoudre ça plus tard
         // Chemin vers un fichier de sortie (par exemple, un fichier texte)
-        const outputFilePath = path.join("uploads", `processed_${req.file.filename}.txt`);
+        const outputFilePath = path.join("uploads", `${req.file.filename}.txt`);
         console.log("Audio processing complete:", outputFilePath);
+        summarizeText(outputFilePath);
         // Répondre avec le chemin du fichier traité
         res.json({ success: true, outputFilePath });
     }
@@ -105,4 +108,12 @@ async function getAccessToken() {
 }
 const fetch_auth = await getAccessToken();
 const access_token = fetch_auth.access_token;
-console.log("Access token: " + access_token);
+async function summarizeText(file) {
+    let content = fs.readFileSync(file, 'utf-8');
+    const message = { role: 'user', content: `Extract keywords (competences, places, skills, work experience, fields of experience...) from this text: ${content}` };
+    const response = await ollama.chat({ model: 'llama3.2', messages: [message], stream: true });
+    for await (const part of response) {
+        process.stdout.write(part.message.content);
+    }
+    console.log(response);
+}

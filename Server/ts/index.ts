@@ -7,6 +7,8 @@ import path from "path";
 import databaseGest from "./database.js";
 import AppDataSource from "./AppDataSource.js";
 import { dataToHTML, fetchAllTablesData } from "./databaseFunctions.js";
+import ollama from 'ollama'
+import * as fs from 'fs';
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -35,13 +37,13 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
     const uploadedFilePath = req.file!.path;
     console.log("Uploaded file:", uploadedFilePath);
 
-    try {
+    // try {
       // Exécuter la commande whisper dans l'environnement virtuel
-      const command = `bash -c "source ../venv/bin/activate && cd ./files && whisper ../${uploadedFilePath} --model turbo --output_format txt"`;
+      const command = `bash -c "source ../venv/bin/activate && mkdir -p uploads &&  cd ./uploads && whisper ../${uploadedFilePath} --model turbo --output_format txt"`;
 
       const { stdout, stderr } = await execPromise(command);
 
-      if (stderr) {
+      /* if (stderr) {
         console.error("Error processing audio:", stderr);
         throw new Error(stderr);
       }
@@ -50,16 +52,16 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
     } catch (error) {
       console.error("Error processing audio:", error);
       //throw error;
-    }
+    } */  // Il y a un problème avec pytorch qui renvoie une erreur alors que la conversion a lieu normallement, j'essaierai de résoudre ça plus tard
 
     // Chemin vers un fichier de sortie (par exemple, un fichier texte)
     const outputFilePath = path.join(
       "uploads",
-      `processed_${req.file!.filename}.txt`
+      `${req.file!.filename}.txt`
     );
 
     console.log("Audio processing complete:", outputFilePath);
-
+    summarizeText(outputFilePath)
     // Répondre avec le chemin du fichier traité
     res.json({ success: true, outputFilePath });
   } catch (error) {
@@ -146,4 +148,13 @@ async function getAccessToken(): Promise<api_response> {
 
 const fetch_auth: api_response = await getAccessToken();
 const access_token: string = fetch_auth.access_token;
-console.log("Access token: " + access_token);
+
+async function summarizeText(file: string): Promise<void> {
+  let content: string = fs.readFileSync(file,'utf-8')
+  const message = { role: 'user', content: `Extract keywords (competences, places, skills, work experience, fields of experience...) from this text: ${content}` }
+  const response = await ollama.chat({ model: 'llama3.2', messages: [message], stream: true })
+  for await (const part of response) {
+    process.stdout.write(part.message.content)
+  }
+  console.log(response)
+}
