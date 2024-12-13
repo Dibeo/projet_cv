@@ -7,7 +7,7 @@ if test -d ./venv; then
 else
     echo "Virtual environnement not found. Creating it." && \
     { # try
-        virtualenv -p python3.10 venv || virtualenv -p python3.11 venv || virtualenv -p python3.12 venv || virtualenv -p python3.13 venv
+        virtualenv -p python3.10 venv || virtualenv -p python3.11 venv || virtualenv -p python3.9 venv
         source ./venv/bin/activate
         python -m pip install -U pip && \
         pip install --upgrade wheel setuptools && \
@@ -17,5 +17,5 @@ else
         exit
     } && \
     echo "Installing dependencies..." && \
-    pip install --upgrade openai-whisper llama-stack
+    pip install --upgrade openai-whisper
 fi
