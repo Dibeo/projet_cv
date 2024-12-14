@@ -9,6 +9,7 @@ import AppDataSource from "./AppDataSource.js";
 import { dataToHTML, fetchAllTablesData } from "./databaseFunctions.js";
 import ollama from 'ollama'
 import * as fs from 'fs';
+import { getMaxListeners } from "events";
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -37,13 +38,13 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
     const uploadedFilePath = req.file!.path;
     console.log("Uploaded file:", uploadedFilePath);
 
-    // try {
+    try {
       // Exécuter la commande whisper dans l'environnement virtuel
       const command = `bash -c "source ../venv/bin/activate && mkdir -p uploads &&  cd ./uploads && whisper ../${uploadedFilePath} --model turbo --output_format txt"`;
 
       const { stdout, stderr } = await execPromise(command);
 
-      /* if (stderr) {
+      if (stderr) {
         console.error("Error processing audio:", stderr);
         throw new Error(stderr);
       }
@@ -52,19 +53,25 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
     } catch (error) {
       console.error("Error processing audio:", error);
       //throw error;
-    } */  // Il y a un problème avec pytorch qui renvoie une erreur alors que la conversion a lieu normallement, j'essaierai de résoudre ça plus tard
+    }
 
     // Chemin vers un fichier de sortie (par exemple, un fichier texte)
-    const outputFilePath = path.join(
+    let outputFilePath = path.join(
       "uploads",
       `${req.file!.filename}.txt`
     );
 
     console.log("Audio processing complete:", outputFilePath);
-    summarizeText(outputFilePath)
+
+    const summarizedFile = await summarizeText(req.file!.filename + '.txt');
+
+    console.log("Text summarizing complete:", summarizedFile);
+
     // Répondre avec le chemin du fichier traité
-    res.json({ success: true, outputFilePath });
+    res.json({ success: true, summarizedFile });
+    console.log("succes");
   } catch (error) {
+    console.log("echec");
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 });
@@ -149,12 +156,14 @@ async function getAccessToken(): Promise<api_response> {
 const fetch_auth: api_response = await getAccessToken();
 const access_token: string = fetch_auth.access_token;
 
-async function summarizeText(file: string): Promise<void> {
-  let content: string = fs.readFileSync(file,'utf-8')
-  const message = { role: 'user', content: `Extract keywords (competences, places, skills, work experience, fields of experience...) from this text: ${content}` }
-  const response = await ollama.chat({ model: 'llama3.2', messages: [message], stream: true })
-  for await (const part of response) {
-    process.stdout.write(part.message.content)
-  }
-  console.log(response)
+async function summarizeText(file: string): Promise<string> {
+  let content: string = fs.readFileSync('uploads/' + file, 'utf-8');
+  const message = { role: 'user', content: `Extract keywords (competences, places, skills, work experience, fields of experience...) from this text: ${content}` };
+  const response = await ollama.chat({ model: 'llama3.2', messages: [message] });
+  const outputFilePath = path.join(
+    "uploads",
+    `${'summary_' + file}`
+  );
+  fs.writeFileSync(outputFilePath, response.message.content);
+  return outputFilePath;
 }
