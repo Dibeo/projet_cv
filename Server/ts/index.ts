@@ -7,6 +7,9 @@ import path from "path";
 import databaseGest from "./database.js";
 import AppDataSource from "./AppDataSource.js";
 import { dataToHTML, fetchAllTablesData } from "./databaseFunctions.js";
+import ollama from 'ollama'
+import * as fs from 'fs';
+import { getMaxListeners } from "events";
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -23,8 +26,9 @@ AppDataSource.initialize()
 // Configuration CORS pour que le fetch avec un localhost fonctionne
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: true,
     methods: ["GET", "POST"], // Autorise les méthodes HTTP nécessaires
+    credentials: true
   })
 );
 
@@ -37,7 +41,7 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
 
     try {
       // Exécuter la commande whisper dans l'environnement virtuel
-      const command = `bash -c "source ../venv/bin/activate && cd ./files && whisper ../${uploadedFilePath} --model turbo --output_format txt"`;
+      const command = `bash -c "source ../venv/bin/activate && mkdir -p uploads &&  cd ./uploads && whisper ../${uploadedFilePath} --model turbo --output_format txt"`;
 
       const { stdout, stderr } = await execPromise(command);
 
@@ -53,16 +57,22 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
     }
 
     // Chemin vers un fichier de sortie (par exemple, un fichier texte)
-    const outputFilePath = path.join(
+    let outputFilePath = path.join(
       "uploads",
-      `processed_${req.file!.filename}.txt`
+      `${req.file!.filename}.txt`
     );
 
     console.log("Audio processing complete:", outputFilePath);
 
+    const summarizedFile = await summarizeText(req.file!.filename + '.txt');
+
+    console.log("Text summarizing complete:", summarizedFile);
+
     // Répondre avec le chemin du fichier traité
-    res.json({ success: true, outputFilePath });
+    res.json({ success: true, summarizedFile });
+    console.log("succes");
   } catch (error) {
+    console.log("echec");
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 });
@@ -146,4 +156,15 @@ async function getAccessToken(): Promise<api_response> {
 
 const fetch_auth: api_response = await getAccessToken();
 const access_token: string = fetch_auth.access_token;
-console.log("Access token: " + access_token);
+
+async function summarizeText(file: string): Promise<string> {
+  let content: string = fs.readFileSync('uploads/' + file, 'utf-8');
+  const message = { role: 'user', content: `Extract keywords (competences, places, skills, work experience, fields of experience...) from this text: ${content}` };
+  const response = await ollama.chat({ model: 'llama3.2', messages: [message] });
+  const outputFilePath = path.join(
+    "uploads",
+    `${'summary_' + file}`
+  );
+  fs.writeFileSync(outputFilePath, response.message.content);
+  return outputFilePath;
+}
