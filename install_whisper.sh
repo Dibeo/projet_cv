@@ -17,5 +17,5 @@ else
         exit
     } && \
     echo "Installing dependencies..." && \
-    pip install --upgrade openai-whisper
+    pip install --upgrade openai-whisper "torch==2.3.1"
 fi
