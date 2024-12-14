@@ -26,8 +26,9 @@ AppDataSource.initialize()
 // Configuration CORS pour que le fetch avec un localhost fonctionne
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: true,
     methods: ["GET", "POST"], // Autorise les méthodes HTTP nécessaires
+    credentials: true
   })
 );
 

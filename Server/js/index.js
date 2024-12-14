@@ -19,8 +19,9 @@ AppDataSource.initialize()
     .catch((error) => console.error("Erreur de connexion à la base de données :", error));
 // Configuration CORS pour que le fetch avec un localhost fonctionne
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: true,
     methods: ["GET", "POST"], // Autorise les méthodes HTTP nécessaires
+    credentials: true
 }));
 // Route pour télécharger et traiter le fichier audio
 app.post("/upload-audio", upload.single("audio"), async (req, res) => {
