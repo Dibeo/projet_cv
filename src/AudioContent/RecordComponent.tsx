@@ -7,6 +7,8 @@ import AudioCard from "./AudioCard";
 import AudioVisualizer from "./AudioVisualizer";
 import driverObj from "./Driver";
 
+import "./RecordComponent.css";
+
 const RecordComponent: React.FC = () => {
   const [recordIsDisabled, setRecordIsDisabled] = useState(false);
   const [stopIsDisabled, setStopIsDisabled] = useState(true);
@@ -201,53 +203,56 @@ const RecordComponent: React.FC = () => {
   };
 
   return (
-    <article style={{ color: "#FFFFFF" }}>
-      <section
-        style={{
-          marginBottom: "15px",
-        }}
-      >
-        <Typography variant="h5">Selection</Typography>
-        <label htmlFor="audioFileInput">Choisissez un fichier audio :</label>
-        <input
-          type="file"
-          id="audioFileInput"
-          name="audioFile"
-          accept="audio/*"
-          onChange={handleFileInputChange}
-        />
-      </section>
-      <section
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography variant="h5">Enregistrement</Typography>
-        <span style={{ display: "flex", gap: "25px" }}>
-          <Button id="record" variant="contained" disabled={recordIsDisabled}>
-            Rec
-          </Button>
-          <Button
-            id="stop"
-            variant="contained"
-            disabled={stopIsDisabled}
-            color="error"
-          >
-            Stop
-          </Button>
-        </span>
-
-        <canvas
-          ref={canvasRef}
+    <article>
+      <div className="side-by-side">
+        <section
           style={{
-            width: "80vw",
-            height: "200px",
-            backgroundColor: "transparent",
+            marginBottom: "15px",
           }}
-        ></canvas>
-      </section>
+        >
+          <Typography variant="h5">Selection</Typography>
+          <label htmlFor="audioFileInput">Choisissez un fichier audio :</label>
+          <input
+            type="file"
+            id="audioFileInput"
+            name="audioFile"
+            accept="audio/*"
+            onChange={handleFileInputChange}
+          />
+        </section>
+
+        <section
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h5">Enregistrement</Typography>
+          <span style={{ display: "flex", gap: "25px" }}>
+            <Button id="record" variant="contained" disabled={recordIsDisabled}>
+              Rec
+            </Button>
+            <Button
+              id="stop"
+              variant="contained"
+              disabled={stopIsDisabled}
+              color="error"
+            >
+              Stop
+            </Button>
+          </span>
+
+          <canvas
+            ref={canvasRef}
+            style={{
+              width: "fit-content",
+              height: "200px",
+              backgroundColor: "transparent",
+            }}
+          ></canvas>
+        </section>
+      </div>
 
       <section
         id="sound-cvs"

@@ -1,0 +1,108 @@
+article {
+  font-family: "Arial", sans-serif; /* Police sobre et professionnelle */
+  color: #2c3e50; /* Couleur de texte sombre et élégante */
+  margin: 20px;
+  line-height: 1.6; /* Améliore la lisibilité */
+}
+
+section {
+  margin-bottom: 30px;
+  padding: 15px;
+  background-color: #ecf0f1; /* Fond clair et professionnel */
+  border: 1px solid #bdc3c7; /* Bordure légère pour la séparation */
+  border-radius: 8px; /* Coins légèrement arrondis pour un style moderne */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère pour de la profondeur */
+}
+
+#sound-cvs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 22vw));
+  gap: 15px;
+  background-color: #ffffff; /* Couleur de fond neutre */
+  background-image: url("./drag-and-drop.png"); /* Indique une fonctionnalité drag-and-drop */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 5%;
+  border: 2px dotted #34495e; /* Bordure en pointillés pour l'aspect drag-and-drop */
+  padding: 25px;
+  border-radius: 8px;
+}
+
+button {
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:disabled {
+  background-color: #bdc3c7;
+  color: #7f8c8d;
+  cursor: not-allowed;
+}
+
+#record {
+  background-color: #27ae60;
+  color: white;
+}
+
+#record:hover:not(:disabled) {
+  background-color: #2ecc71;
+}
+
+#stop {
+  background-color: #e74c3c;
+  color: white;
+}
+
+#stop:hover:not(:disabled) {
+  background-color: #c0392b;
+}
+
+canvas {
+  border: 1px solid #bdc3c7; /* Bordure pour délimiter la zone du canvas */
+  border-radius: 5px;
+  margin-top: 15px;
+}
+
+label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+input[type="file"] {
+  font-size: 14px;
+  padding: 5px;
+  border: 1px solid #bdc3c7;
+  border-radius: 5px;
+}
+
+.audio-card {
+  background-color: #ecf0f1;
+  border: 1px solid #bdc3c7;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  .side-by-side {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .side-by-side > section {
+    flex: 1;
+    margin-right: 20px;
+  }
+
+  .side-by-side > section:last-child {
+    margin-right: 0;
+  }
+}
