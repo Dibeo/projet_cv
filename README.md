@@ -38,6 +38,9 @@ FR: Pour utiliser l'application, vous dervrez installer python >= 3.9 <= 3.11 > 
 - **fedora 40/41** : (ex for python 10): ``` sudo apt install -y python3-full python3-devel python3.10 python3.10-devel python3-virtualenv + ffmpeg ```
 - **windows** : (ex for python 12): ``` https://www.python.org/downloads/release/python-3120/ & pip3 install virtualenv ```
 
+You also need to download llama3.2 with [ollama](https://ollama.com/download/)
+``` ollama serve && ollama pull llama3.2 ```
+
 ### Commands to install server:
 
 ``` chmod +x install_whisper.sh && ./install_whisper.sh ``` or ```bash install_whisper.sh``` in project root.
