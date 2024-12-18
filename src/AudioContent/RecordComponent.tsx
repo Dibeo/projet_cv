@@ -6,6 +6,7 @@ import React, { useEffect, useState, useRef } from "react";
 import AudioCard from "./AudioCard";
 import AudioVisualizer from "./AudioVisualizer";
 import driverObj from "./Driver";
+import extractAudioFromVideo from "./VideoToAudio";
 
 import "./RecordComponent.css";
 
@@ -202,6 +203,61 @@ const RecordComponent: React.FC = () => {
     }
   };
 
+  const handleVideoFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const videoFile = files[0];
+
+      try {
+        // Extraction de l'audio
+        const audioBlob = await extractAudioFromVideo(videoFile);
+
+        // Générer un URL pour le fichier audio extrait
+        const audioURL = URL.createObjectURL(audioBlob);
+
+        // Demander un nom pour le fichier audio
+        const { value: cvName } = await Swal.fire({
+          title: "Nommer le CV audio",
+          input: "text",
+          inputLabel: "Entrez un nom pour le CV extrait",
+          inputPlaceholder: "Nom du CV",
+          showCancelButton: true,
+          confirmButtonText: "Enregistrer",
+          cancelButtonText: "Annuler",
+          inputValidator: (value) => {
+            if (!value) {
+              return "Vous devez entrer un nom !";
+            }
+            return null;
+          },
+        });
+
+        const finalCVName = cvName || videoFile.name.replace(/\.[^/.]+$/, "");
+
+        // Ajouter le fichier audio extrait à la liste
+        setCVs((prevCVs) => [...prevCVs, { audioURL, cvName: finalCVName }]);
+
+        // Réinitialiser l'entrée fichier vidéo
+        const videoInput = document.getElementById(
+          "video-input"
+        ) as HTMLInputElement;
+        if (videoInput) {
+          videoInput.value = "";
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'extraction de l'audio :", error);
+        Swal.fire({
+          title: "Erreur !",
+          text: "Une erreur est survenue lors de l'extraction de l'audio.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    }
+  };
+
   return (
     <article>
       <div className="side-by-side">
@@ -218,6 +274,14 @@ const RecordComponent: React.FC = () => {
             name="audioFile"
             accept="audio/*"
             onChange={handleFileInputChange}
+          />
+          <br />
+          <label htmlFor="video-input">Choisissez un fichier vidéo :</label>
+          <input
+            type="file"
+            id="video-input"
+            accept=".mp4,.webm,.ogg,.mkv,.mov,.avi"
+            onChange={(e) => handleVideoFileChange(e)}
           />
         </section>
 
