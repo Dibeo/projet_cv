@@ -46,13 +46,13 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
 
       if (stderr) {
         console.error("Error processing audio:", stderr);
-        throw new Error(stderr);
+        throw stderr;
       }
 
       console.log("Command output:", stdout);
     } catch (error) {
       console.error("Error processing audio:", error);
-      //throw error;
+      throw error;
     }
 
     // Chemin vers un fichier de sortie (par exemple, un fichier texte)
@@ -63,12 +63,13 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
 
     console.log("Audio processing complete:", outputFilePath);
 
-    const summarizedFile = await summarizeText(req.file!.filename + '.txt');
+    //const summarizedFile = await summarizeText(req.file!.filename + '.txt');
 
-    console.log("Text summarizing complete:", summarizedFile);
+    //console.log("Text summarizing complete:", summarizedFile);
 
     // Répondre avec le chemin du fichier traité
-    res.json({ success: true, summarizedFile });
+    //res.json({ success: true, summarizedFile });
+    res.status(200);
     console.log("succes");
   } catch (error) {
     console.log("echec");

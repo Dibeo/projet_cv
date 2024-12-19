@@ -1,26 +1,24 @@
 import AppDataSource from "./AppDataSource.js";
-import Ville from "./Entity/villes.js";
-import Personne from "./Entity/personnes.js";
-import Competence from "./Entity/competences.js";
-import PersonneCompetence from "./Entity/personnes-competences.js";
+import CurriculumVitae from "./Entity/CurriculumVitae.js";
+import ExtractedTermOrExpression from "./Entity/ExtractedTermOrExpression.js";
+import Lien from "./Entity/Lien.js";
 // Fonction pour récupérer toutes les données des tables
 export const fetchAllTablesData = async () => {
     try {
-        const villeRepository = AppDataSource.getRepository(Ville);
-        const personneRepository = AppDataSource.getRepository(Personne);
-        const competenceRepository = AppDataSource.getRepository(Competence);
-        const personneCompetenceRepository = AppDataSource.getRepository(PersonneCompetence);
-        const villes = await villeRepository.find();
-        const personnes = await personneRepository.find({ relations: ["ville"] });
-        const competences = await competenceRepository.find();
-        const personneCompetences = await personneCompetenceRepository.find({
-            relations: ["personne", "competence"],
+        const cvRepository = AppDataSource.getRepository(CurriculumVitae);
+        const termRepository = AppDataSource.getRepository(ExtractedTermOrExpression);
+        const lienRepository = AppDataSource.getRepository(Lien);
+        const cvs = await cvRepository.find();
+        const extractedTerms = await termRepository.find({
+            relations: ["curriculumVitae"],
+        });
+        const liens = await lienRepository.find({
+            relations: ["extractedTermOrExpression"],
         });
         return {
-            villes,
-            personnes,
-            competences,
-            personneCompetences,
+            cvs,
+            extractedTerms,
+            liens,
         };
     }
     catch (error) {
@@ -28,39 +26,75 @@ export const fetchAllTablesData = async () => {
         throw error;
     }
 };
+// Fonction pour générer du HTML à partir des données
 export const dataToHTML = (data) => {
     let html = `
     <h1>Base de données</h1>
     
-    <h2>Villes</h2>
+    <h2>Curriculum Vitae</h2>
     <table border="1">
-      <tr><th>Code Ville</th><th>Nom Ville</th></tr>`;
-    data.villes.forEach((ville) => {
-        html += `<tr><td>${ville.codV}</td><td>${ville.nomV}</td></tr>`;
+      <tr>
+        <th>CV ID</th>
+        <th>Date de production</th>
+        <th>Lieu de production</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Téléphone</th>
+        <th>Email</th>
+      </tr>`;
+    data.cvs.forEach((cv) => {
+        html += `
+      <tr>
+        <td>${cv.curriculum_vitae_identity}</td>
+        <td>${cv.production_date.toISOString().split("T")[0]}</td>
+        <td>${cv.production_place}</td>
+        <td>${cv.surname}</td>
+        <td>${cv.forname}</td>
+        <td>${cv.mobile_phone}</td>
+        <td>${cv.e_mail}</td>
+      </tr>`;
     });
     html += `</table>`;
     html += `
-    <h2>Personnes</h2>
+    <h2>Termes ou Expressions Extraites</h2>
     <table border="1">
-      <tr><th>Code Personne</th><th>Nom</th><th>Prénom</th><th>Ville</th></tr>`;
-    data.personnes.forEach((personne) => {
-        html += `<tr><td>${personne.codP}</td><td>${personne.nom}</td><td>${personne.prenom}</td><td>${personne.ville.nomV}</td></tr>`;
+      <tr>
+        <th>Term ID</th>
+        <th>Terme/Expression</th>
+        <th>Est un terme</th>
+        <th>Début (time)</th>
+        <th>Fin (time)</th>
+        <th>ID CV associé</th>
+      </tr>`;
+    data.extractedTerms.forEach((term) => {
+        html += `
+      <tr>
+        <td>${term.extracted_term_or_expression_identity}</td>
+        <td>${term.extracted_term_or_expression}</td>
+        <td>${term.is_term ? "Oui" : "Non"}</td>
+        <td>${term.from}</td>
+        <td>${term.to}</td>
+        <td>${term.curriculumVitae?.curriculum_vitae_identity}</td>
+      </tr>`;
     });
     html += `</table>`;
     html += `
-    <h2>Compétences</h2>
+    <h2>Liens entre Termes et Compétences/Jobs</h2>
     <table border="1">
-      <tr><th>Code Compétence</th><th>Intitulé</th></tr>`;
-    data.competences.forEach((competence) => {
-        html += `<tr><td>${competence.codC}</td><td>${competence.intitule}</td></tr>`;
-    });
-    html += `</table>`;
-    html += `
-    <h2>Personnes et leurs Compétences</h2>
-    <table border="1">
-      <tr><th>Personne</th><th>Compétence</th><th>Timecode (s)</th></tr>`;
-    data.personneCompetences.forEach((pc) => {
-        html += `<tr><td>${pc.personne.nom} ${pc.personne.prenom}</td><td>${pc.competence.intitule}</td><td>${pc.timecode}</td></tr>`;
+      <tr>
+        <th>Lien ID</th>
+        <th>Terme ID</th>
+        <th>Compétence/Job</th>
+        <th>Est une compétence</th>
+      </tr>`;
+    data.liens.forEach((lien) => {
+        html += `
+      <tr>
+        <td>${lien.lien_identity}</td>
+        <td>${lien.extractedTermOrExpression?.extracted_term_or_expression_identity}</td>
+        <td>${lien.skill_or_job}</td>
+        <td>${lien.is_skill ? "Oui" : "Non"}</td>
+      </tr>`;
     });
     html += `</table>`;
     return html;

@@ -1,77 +1,87 @@
 import AppDataSource from "./AppDataSource.js";
-import Personne from "./Entity/personnes.js";
-import Ville from "./Entity/villes.js";
-import Competence from "./Entity/competences.js";
-import PersonneCompetence from "./Entity/personnes-competences.js";
+import CurriculumVitae from "./Entity/CurriculumVitae.js";
+import ExtractedTermOrExpression from "./Entity/ExtractedTermOrExpression.js";
+import Lien from "./Entity/Lien.js";
 
 const databaseGest = async () => {
   try {
-
     // Repositories
-    const villeRepository = AppDataSource.getRepository(Ville);
-    const personneRepository = AppDataSource.getRepository(Personne);
-    const competenceRepository = AppDataSource.getRepository(Competence);
-    const personneCompetenceRepository = AppDataSource.getRepository(PersonneCompetence);
+    const curriculumVitaeRepository = AppDataSource.getRepository(CurriculumVitae);
+    const extractedTermRepository = AppDataSource.getRepository(ExtractedTermOrExpression);
+    const lienRepository = AppDataSource.getRepository(Lien);
 
-    // Création de villes
-    const villeParis = villeRepository.create({ codV: "V0123456", nomV: "Paris" });
-    const villeLyon = villeRepository.create({ codV: "V1234567", nomV: "Lyon" });
-    await villeRepository.save([villeParis, villeLyon]);
-
-    // Création de personnes
-    const personneJean = personneRepository.create({
-      codP: "P1234567",
-      nom: "Dupont",
-      prenom: "Jean",
-      tel: "1234567890",
-      mail: "jean.dupont@example.com",
-      nomRue: "Rue de Paris",
-      codePos: "75000",
-      numAdd: 12,
-      ville: villeParis,
+    // Création de CVs
+    const cvJean = curriculumVitaeRepository.create({
+      production_date: new Date("2024-09-14"),
+      production_place: "Paris",
+      surname: "Dupont",
+      forname: "Jean",
+      mobile_phone: "1234567890",
+      e_mail: "jean.dupont@example.com",
+      audio: Buffer.from(""), // Exemple vide
+      video: Buffer.from(""), // Exemple vide
     });
 
-    const personneMarie = personneRepository.create({
-      codP: "P7654321",
-      nom: "Durand",
-      prenom: "Marie",
-      tel: "0987654321",
-      mail: "marie.durand@example.com",
-      nomRue: "Rue de Lyon",
-      codePos: "69000",
-      numAdd: 34,
-      ville: villeLyon,
+    const cvMarie = curriculumVitaeRepository.create({
+      production_date: new Date("2024-09-14"),
+      production_place: "Lyon",
+      surname: "Durand",
+      forname: "Marie",
+      mobile_phone: "0987654321",
+      e_mail: "marie.durand@example.com",
+      audio: Buffer.from(""), // Exemple vide
+      video: Buffer.from(""), // Exemple vide
     });
 
-    await personneRepository.save([personneJean, personneMarie]);
+    await curriculumVitaeRepository.save([cvJean, cvMarie]);
 
-    // Création de compétences
-    const competenceJS = competenceRepository.create({ codC: "C001", intitule: "JavaScript" });
-    const competenceTS = competenceRepository.create({ codC: "C002", intitule: "TypeScript" });
-    const competenceDB = competenceRepository.create({ codC: "C003", intitule: "Database Management" });
-
-    await competenceRepository.save([competenceJS, competenceTS, competenceDB]);
-
-    // Lier les personnes et leurs compétences via PersonneCompetence
-    const pc1 = personneCompetenceRepository.create({
-      personne: personneJean,
-      competence: competenceJS,
-      timecode: 124, // en secondes
+    // Création de termes ou expressions extraits
+    const termJS = extractedTermRepository.create({
+      extracted_term_or_expression: "JavaScript",
+      is_term: true,
+      from: "00:01:00",
+      to: "00:01:10",
+      curriculumVitae: cvJean,
     });
 
-    const pc2 = personneCompetenceRepository.create({
-      personne: personneJean,
-      competence: competenceDB,
-      timecode: 64,
+    const termDB = extractedTermRepository.create({
+      extracted_term_or_expression: "Database Management",
+      is_term: true,
+      from: "00:02:00",
+      to: "00:02:15",
+      curriculumVitae: cvJean,
     });
 
-    const pc3 = personneCompetenceRepository.create({
-      personne: personneMarie,
-      competence: competenceTS,
-      timecode: 180,
+    const termTS = extractedTermRepository.create({
+      extracted_term_or_expression: "TypeScript",
+      is_term: true,
+      from: "00:03:00",
+      to: "00:03:15",
+      curriculumVitae: cvMarie,
     });
 
-    await personneCompetenceRepository.save([pc1, pc2, pc3]);
+    await extractedTermRepository.save([termJS, termDB, termTS]);
+
+    // Création des liens entre termes extraits et compétences
+    const lien1 = lienRepository.create({
+      extractedTermOrExpression: termJS,
+      skill_or_job: "JavaScript",
+      is_skill: true,
+    });
+
+    const lien2 = lienRepository.create({
+      extractedTermOrExpression: termDB,
+      skill_or_job: "Database Management",
+      is_skill: true,
+    });
+
+    const lien3 = lienRepository.create({
+      extractedTermOrExpression: termTS,
+      skill_or_job: "TypeScript",
+      is_skill: true,
+    });
+
+    await lienRepository.save([lien1, lien2, lien3]);
 
     console.log("Données insérées avec succès !");
   } catch (error) {
