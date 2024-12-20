@@ -10,6 +10,27 @@ EN: Click [here](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) to acce
 
 FR: Clicker [ici](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) pour voir le sujet complet.
 
+# Liste des tâches fonctionnels
+
+## Travail à faire
+- [ ] Extraire de l'audio les termes et expressions correspondant à :
+  - [ ] Compétences et métiers reconnus accessibles via l'API de France Travail (ex. soudure, soudage à l'arc électrique, soudage au laser).
+  - [ ] Notions relatives à la mobilité (ex. Pau, Auch, La Rochelle, Sud-Ouest).
+- [ ] Indexer dans l'audio les termes et expressions extraits :
+  - [ ] Repérer les points temporels.
+  - [ ] Éliminer les phases audio/vidéo non pertinentes pour obtenir une vidéo de **1 min. 30 max**.
+- [ ] Sauvegarder le résultat dans une base de données :
+  - [X] MySQL ou MariaDB.
+  - [V] Utiliser TypeORM (script SQL).
+
+## Technologies
+- [V] Enregistrer la vidéo et l'audio via une interface Web dans le navigateur :
+  - [V] Gérer le format MP4 (audio intégré) ou des fichiers séparés (audio/vidéo synchronisés).
+- [V] Choisir une technologie pour l'extraction de texte à partir de l'audio :
+  - [X] Librairies payantes : VoiceCue (Deepgram), AssemblyAI, Google AI, AWS Transcribe.
+  - [X] Librairies open source (ex. DeepSpeech).
+
+
 # Used software/libraries :
 - **[Material UI](https://mui.com/)** : Styling
 - **[SweetAlert 2](https://sweetalert2.github.io/)** : Alerts management
