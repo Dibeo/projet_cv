@@ -10,8 +10,8 @@ EN: Click [here](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) to acce
 
 FR: Clicker [ici](https://franckbarbier.com/DMiNer/Curriculum_vitae.html) pour voir le sujet complet.
 
-# Liste des tâches fonctionnels
-
+# TO - DO
+FR:
 ## Travail à faire
 - [X] Extraire de l'audio les termes et expressions correspondant à :
   - [ ] Compétences et métiers reconnus accessibles via l'API de France Travail (ex. soudure, soudage à l'arc électrique, soudage au laser).
