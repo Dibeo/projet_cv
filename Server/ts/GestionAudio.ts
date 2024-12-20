@@ -49,11 +49,44 @@ export async function getAccessToken(): Promise<api_response> {
 const fetch_auth: api_response = await getAccessToken();
 const access_token: string = fetch_auth.access_token;
 
+const prompt: string = `You are an artificial intelligence designed to extract structured information from descriptive text and convert it into a JSON format compatible with a database. Below are the entities and their respective fields you must identify in the text:
+
+1. Curriculum Vitae (CV)
+- curriculum_vitae_identity: Unique identifier for the CV (if not provided, generate a unique numeric identifier).
+- production_date: Date the CV was produced (format: YYYY-MM-DD).
+- production_place: Place where the CV was produced.
+- surname: Last name of the person.
+- forname: First name of the person.
+- birth_date: Date of birth (format: YYYY-MM-DD, optional).
+- identity_number: Identity number (13 characters, optional).
+- checksum: Verification code (2 characters, optional).
+- mobile_phone: Phone number.
+- e_mail: Email address.
+- audio: Link or identifier of an associated audio file.
+- video: Link or identifier of an associated video file.
+
+2. Extracted Terms or Expressions
+- extracted_term_or_expression_identity: Unique identifier for the term or expression.
+- extracted_term_or_expression: Content of the term or expression.
+- is_term: Indicates if it is a term (true) or an expression (false).
+- from: Start time in the audio file (format: HH:MM:SS).
+- to: End time in the audio file (format: HH:MM:SS).
+- curriculum_vitae_identity: Reference to the associated CV identifier.
+
+3. Links
+- match_identity: Unique identifier for the link.
+- extracted_term_or_expression_identity: Reference to an extracted term or expression.
+- skill_or_job: Name of the related skill or job.
+- is_skill: Indicates if it is a skill (true) or a job (false).
+
+Input Text:  
+The text will contain descriptions, and your task is to output a structured JSON object with all the information extracted. Respond only with the JSON object as requested, without adding comments or explanations.`;
+
 export async function summarizeText(file: string): Promise<string> {
   let content: string = fs.readFileSync("uploads/" + file, "utf-8");
   const message = {
     role: "user",
-    content: `Extract keywords (competences, places, skills, work experience, fields of experience...) from this text: ${content}`,
+    content: `${prompt} From this text: ${content}`,
   };
   const response = await ollama.chat({
     model: "llama3.2",
