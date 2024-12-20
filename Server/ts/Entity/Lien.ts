@@ -15,7 +15,7 @@ export default class Lien {
   @Column({ type: "integer" })
   extracted_term_or_expression_identity!: number;
 
-  @Column({ type: "string", length: 250 })
+  @Column({ type: "varchar", length: 250 })
   skill_or_job!: string;
 
   @Column({ type: "boolean" })

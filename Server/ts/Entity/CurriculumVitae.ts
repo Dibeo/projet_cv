@@ -14,28 +14,28 @@ export default class CurriculumVitae {
   @Column({ type: "date" })
   production_date!: Date;
 
-  @Column({ type: "string", length: 100 })
+  @Column({ type: "varchar", length: 100 })
   production_place!: string;
 
-  @Column({ type: "string", length: 100 })
+  @Column({ type: "varchar", length: 100 })
   surname!: string;
 
-  @Column({ type: "string", length: 100 })
+  @Column({ type: "varchar", length: 100 })
   forname!: string;
 
   @Column({ type: "date", nullable: true })
   birth_date!: Date;
 
-  @Column({ type: "string", length: 13, nullable: true })
+  @Column({ type: "varchar", length: 13, nullable: true })
   identity_number!: string;
 
-  @Column({ type: "string", length: 2, nullable: true })
+  @Column({ type: "varchar", length: 2, nullable: true })
   checksum!: string;
 
-  @Column({ type: "string", length: 100 })
+  @Column({ type: "varchar", length: 100 })
   mobile_phone!: string;
 
-  @Column({ type: "string", length: 100 })
+  @Column({ type: "varchar", length: 100 })
   e_mail!: string;
 
   @Column({ type: "blob" })

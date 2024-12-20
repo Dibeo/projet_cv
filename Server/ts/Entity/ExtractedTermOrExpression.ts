@@ -14,7 +14,7 @@ export default class ExtractedTermOrExpression {
   @PrimaryGeneratedColumn({ type: "integer" })
   extracted_term_or_expression_identity!: number;
 
-  @Column({ type: "string", length: 250 })
+  @Column({ type: "varchar", length: 250 })
   extracted_term_or_expression!: string;
 
   @Column({ type: "boolean" })

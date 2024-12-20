@@ -8,7 +8,7 @@ import path from "path";
 import databaseGest from "./database.js";
 import AppDataSource from "./AppDataSource.js";
 import { dataToHTML, fetchAllTablesData } from "./databaseFunctions.js";
-import { summarizeText } from "./GestionAudio.js";
+import RomeoTerm, { getSkill } from "./GestionAudio.js";
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -63,16 +63,17 @@ app.post("/upload-audio", upload.single("audio"), async (req, res) => {
 
     console.log("Audio processing complete:", outputFilePath);
 
-    //const summarizedFile = await summarizeText(req.file!.filename + '.txt');
+    const summarizedFile = await getSkill(req.file!.filename + '.txt');
 
-    //console.log("Text summarizing complete:", summarizedFile);
+    console.log("Text summarizing complete:", summarizedFile);
 
     // Répondre avec le chemin du fichier traité
-    //res.json({ success: true, summarizedFile });
+    res.json({ success: true, summarizedFile });
     res.status(200);
     console.log("succes");
   } catch (error) {
     console.log("echec");
+    console.log(error);
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 });

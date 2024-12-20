@@ -28,7 +28,7 @@ FR:
   - [X] Gérer le format MP4 (audio intégré) ou des fichiers séparés (audio/vidéo synchronisés).
 - [X] Choisir une technologie pour l'extraction de texte à partir de l'audio :
   - [ ] Librairies payantes : VoiceCue (Deepgram), AssemblyAI, Google AI, AWS Transcribe.
-  - [ ] Librairies open source (ex. DeepSpeech).
+  - [X] Librairies open source (ex. DeepSpeech). (whisper utilisé)
 
 
 # Used software/libraries :
