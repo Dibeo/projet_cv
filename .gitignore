@@ -29,6 +29,7 @@ Server/package-lock.json
 # Project random things that does not need to be on github
 Server/uploads
 Server/files
+Server/js
 
 npm-debug.log*
 yarn-debug.log*
