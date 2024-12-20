@@ -26,6 +26,12 @@ export interface term {
   confidence: number;
 }
 
+export interface fileJSON {
+  domainesExpertise: string[],
+  Competences: string[],
+  Diplomes: string[]
+}
+
 
 /**
  * Genere un token d'acces à ROMEO
@@ -68,11 +74,10 @@ export async function getAccessToken(): Promise<api_response> {
 
 
 // Ollama's prompt
-const prompt: string = `Extract the terms linked to professionnal skills and jobs from the following text. The text will contain descriptions, and your task is to output a in a structured JSON file with all the information extracted. The JSON file's content must be organized in the following fields :
-1. Domaines d'expertise
-2. Role / metier
-3. Competences
-4. Cretificats / diplomes
+const prompt: string = `Extract the terms linked to professionnal competences and Metiers from the following text. The text will contain descriptions, and your task is to output a in a structured JSON file with all the information extracted. The JSON file's content must be organized in the following fields :
+1. domainesExpertise
+2. Competences
+3. Diplomes
 Respond only with the JSON as requested, without adding comments or explanations. Your response must be readable by a JSON parser`;
 
 
@@ -97,91 +102,109 @@ export async function summarizeText(file: string): Promise<string> {
 }
 
 /**
- * parses json file
- * unfinished
- * to remove when RomeoTerm is finished
+ * parses json file and calls RomeoTerm
+ * WARNING: partially working
  */
 export async function getSkill(filename: string): Promise<string> {
   const fetch_auth: api_response = await getAccessToken();
   const access_token: string = fetch_auth.access_token;
   const summarizedFile = await summarizeText(filename);
-  let fileJSON: JSON = JSON.parse(fs.readFileSync(summarizedFile, "utf-8"));
 
-  const headers: Headers = new Headers();
+  let JSONterm: fileJSON = JSON.parse(fs.readFileSync(summarizedFile, "utf-8"));
 
-  const request: RequestInfo = new Request(
-    "https://entreprise.francetravail.fr/connexion/oauth2/access_token?realm=%2Fpartenaire",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body:
-        ""
+  // Does not work, uncomment only for testing purposes
+  /*
+  console.log(JSONterm);
+  console.log(JSONterm.Competences);
+  let regex = new RegExp(/("[^"]+"|[^"\s]+)/g);
+  // Envoie des données à ROMEO
+  for (let tmp of JSONterm.Competences) {
+    let exp = tmp.match(regex)
+    if (exp != null) {
+      for (let i = 0; i < exp.length; i++) {
+        let word = exp[i].replace(/^"([^"]+)"$/, "$1").replace(/\s+/, " ");
+        let romeo_term = new RomeoTerm(word, access_token);
+        romeo_term.registerInDB;
+      }
     }
-  );
-  const result = await fetch(request)
-    // the JSON body is taken from the response
-    .then((res) => res.json())
-    .then((res) => {
+  }
+  for (let tmp of JSONterm.Diplomes) {
+    let exp = tmp.match(regex)
+    if (exp != null) {
+      for (let i = 0; i < exp.length; i++) {
+        let word = exp[i].replace(/^"([^"]+)"$/, "$1").replace(/\s+/, " ");
+        let romeo_term = new RomeoTerm(word, access_token);
+        romeo_term.registerInDB;
+      }
+    }
+  }
+  for (let tmp of JSONterm.domainesExpertise) {
+    let exp = tmp.match(regex)
+    if (exp != null) {
+      for (let i = 0; i < exp.length; i++) {
+        let word = exp[i].replace(/^"([^"]+)"$/, "$1").replace(/\s+/, " ");
+        let romeo_term = new RomeoTerm(word, access_token);
+        romeo_term.registerInDB;
+      }
+    }
+  }
+  */
 
-    });
   return summarizedFile;
 }
 
 
 /**
  * class in charge of all data parsing related to romeo
- * also (is supposed to) puts the data in the database
- * WARNING: not functionnal yet
+ * also puts the data in the database
  */
 export default class RomeoTerm {
-/* -- WORK IN PROGRESS -- */
+  /* -- WORK IN PROGRESS -- */
 
   private _Expression: string;
-  private _Skills: term[];
-  private _Jobs: string[];
+  private _Competences: term[];
+  private _Metiers: string[];
 
-  constructor(data: string, start: number, end: number, token: string) {
+  constructor(data: string, token: string) {
     this._Expression = data;
-    this._Skills = [];
-    this._Jobs = [];
+    this._Competences = [];
+    this._Metiers = [];
     this.ask_api(token);
   }
 
   get_Expression(): string { return this._Expression }
-  get_Skills(): term[] {
-    return this._Skills;
+  get_Competences(): term[] {
+    return this._Competences;
   }
 
   public async ask_api(token: string) {
-    // Skills
-    const url = "https://api.francetravail.io/partenaire/romeo/v2/predictionSkills";
+    // competences
+    const url = "https://api.francetravail.io/partenaire/romeo/v2/predictionCompetences";
 
-    const Skills = {
+    const competences = {
       headers: {
         "Authorization": "Bearer " + token,
         'Content-Type': 'application/json; charset=utf-8',
         Accept: 'application/json; charset=utf-8, application/json'
       },
-      body: '{\n  "Skills": [\n    {\n      "label": "' + this._Expression + '",\n      "sub": "123"\n    }\n  ],\n  "Jobs": {\n    "caller": "francetravail",\n    "nbResuls": 2,\n    "thresholdPredictionScore": 0.7\n  }\n}',
+      body: '{\n  "competences": [\n  {\n  "intitule": "' + this._Expression + '",\n  "identifiant": "123"\n  }\n  ],\n  "options": {\n  "nomAppelant": "francetravail",\n  "nbResultats": 2,\n  "seuilScorePrediction": 0.7\n  }\n}',
       method: "POST",
     };
     try {
-      const response = await fetch(url, Skills);
+      const response = await fetch(url, competences);
       try {
         const data = await response.json();
-        data[0].SkillsRome.forEach((elt: any) => {
+        data[0].competencesRomeo.forEach((elt: any) => {
           console.log(elt);
-          let tmp: term = {
-            code: elt.skillCode,
-            label: elt.skillLabel,
-            confidence: elt.predictionScore,
-            type: elt.typeSkill
+          let term_competence: term = {
+            code: elt.codeCompetence,
+            label: elt.libelleCompetence,
+            confidence: elt.scorePrediction,
+            type: elt.typeCompetance
           }
-          this._Skills.push(tmp);
+          this._Competences.push(term_competence);
         });
-        console.log("data[0].SkillRome : " + JSON.stringify(data[0].SkillsRome));
+        console.log("data[0].competencedRomeo : " + JSON.stringify(data[0].competencesRomeo));
 
       }
       catch (error) {
@@ -195,28 +218,28 @@ export default class RomeoTerm {
 
     await new Promise(resolve => setTimeout(resolve, 2000))
 
-    // Jobs
+    // Metiers
     const url2 = "https://api.francetravail.io/partenaire/romeo/v2/predictionMetiers";
 
-    const Jobs = {
+    const metiers = {
       headers: {
         "Authorization": "Bearer " + token,
         'Content-Type': 'application/json; charset=utf-8',
         Accept: 'application/json; charset=utf-8, application/json'
       },
-      body: '{\n  "Jobs": [\n    {\n      "label": "' + this._Expression + '",\n      "sub": "123"\n    }\n  ],\n  "Jobs": {\n    "caller": "francetravail",\n    "nbResuls": 2,\n    "thresholdPredictionScore": 0.7\n  }\n}',
+      body: '{\n  "appellations": [\n  {\n  "intitule": "' + this._Expression + '",\n  "identifiant": "123"\n  }\n  ],\n  "options": {\n  "nomAppelant": "francetravail",\n  "nbResultats": 2,\n  "seuilScorePrediction": 0.7\n  }\n}',
       method: "POST",
     };
     try {
-      const response = await fetch(url2, Jobs);
+      const response = await fetch(url2, metiers);
       try {
         const data = await response.json();
         data[0].metiersRome.forEach((elt: any) => {
           console.log(elt);
-          let tmp: string = elt.libelleAppellation;
-          this._Jobs.push(tmp);
+          let term_metier: string = elt.libelleAppellation;
+          this._Metiers.push(term_metier);
         });
-        console.log("data[0].metiersRome : " + JSON.stringify(data[0].metiersRome));
+        console.log("data[0].metiersRomeo : " + JSON.stringify(data[0].metiersRomeo));
 
       }
       catch (error) {
@@ -230,17 +253,17 @@ export default class RomeoTerm {
 
     await new Promise(resolve => setTimeout(resolve, 2000))
 
-    console.log(Skills);
+    console.log(competences);
   }
 
-  public to_database(cv: CurriculumVitae): [ExtractedTermOrExpression, Lien[]] {
+  public registerInDB(cv: CurriculumVitae): [ExtractedTermOrExpression, Lien[]] {
     let extract = new ExtractedTermOrExpression();
     extract.extracted_term_or_expression = this._Expression;
     extract.is_term = true;
     extract.curriculumVitae = cv;
 
     let match: Lien[] = [];
-    this._Skills.forEach(e => {
+    this._Competences.forEach(e => {
       let tmp = new Lien();
       tmp.extractedTermOrExpression = extract;
       tmp.skill_or_job = e.label;
@@ -248,7 +271,7 @@ export default class RomeoTerm {
       match.push(tmp);
     });
 
-    this._Jobs.forEach(e => {
+    this._Metiers.forEach(e => {
       let tmp = new Lien();
       tmp.extractedTermOrExpression = extract;
       tmp.skill_or_job = e;
